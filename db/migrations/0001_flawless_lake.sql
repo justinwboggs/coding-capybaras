@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX IF NOT EXISTS "platform_payment_customers_provider_external_id_uq" ON "platform_payment_customers" USING btree ("provider","external_id");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "platform_subscriptions_provider_external_id_uq" ON "platform_subscriptions" USING btree ("provider","external_id");

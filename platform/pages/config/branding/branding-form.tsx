@@ -68,7 +68,7 @@ export function BrandingForm({ initial }: { initial: BrandingInput }) {
                 <FormItem>
                   <FormLabel>App name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Coding Capybaras" {...field} />
+                    <Input placeholder="Your brand name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

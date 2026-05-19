@@ -24,6 +24,11 @@ export const CONFIG_KEYS = {
   // signups need the install-tutorial flow, not the staged Supabase setup.
   // See platform/lib/journey/queries.ts for the redirect site.
   onboardingInitialRedirect: "onboarding.initial_redirect",
+  // Whether the journey gate exists at all. "journey" (default) keeps the
+  // gate on; "skip" disables it entirely — requireJourneyComplete() becomes
+  // a no-op and /journey redirects to /dashboard. Orthogonal to
+  // onboardingInitialRedirect: when mode is "skip", that setting is moot.
+  onboardingMode: "onboarding.mode",
 } as const;
 
 export interface Branding {
@@ -51,6 +56,19 @@ export type OnboardingInitialRedirect = "docs" | "journey";
  */
 export const DEFAULT_ONBOARDING_INITIAL_REDIRECT: OnboardingInitialRedirect =
   "journey";
+
+/**
+ * Whether the journey gate exists for this deployment. "journey" keeps the
+ * gate on (Sarah's default — new signups are routed per
+ * `onboardingInitialRedirect`). "skip" turns the gate off entirely — every
+ * user is treated as journey-complete and /journey itself redirects to
+ * /dashboard. Use "skip" for derivative deployments where end users are
+ * signing up for the deployer's hosted product, not customizing a copy of
+ * the boilerplate (e.g. codingcapybaras.com's ZIP-download flow).
+ */
+export type OnboardingMode = "journey" | "skip";
+
+export const DEFAULT_ONBOARDING_MODE: OnboardingMode = "journey";
 
 /**
  * Every platform_config row as a key→value map — the single DB read all
@@ -94,6 +112,19 @@ export async function getOnboardingInitialRedirect(): Promise<OnboardingInitialR
   return raw === "docs" || raw === "journey"
     ? raw
     : DEFAULT_ONBOARDING_INITIAL_REDIRECT;
+}
+
+/**
+ * Whether the journey gate is on. Reads platform_config; falls back to
+ * "journey" if missing or invalid. Cached per request via getAllConfig().
+ *
+ * Consumed by requireJourneyComplete() (early-exit when "skip") and the
+ * /journey route (server-side redirect to /dashboard when "skip").
+ */
+export async function getOnboardingMode(): Promise<OnboardingMode> {
+  const all = await getAllConfig();
+  const raw = all[CONFIG_KEYS.onboardingMode];
+  return raw === "journey" || raw === "skip" ? raw : DEFAULT_ONBOARDING_MODE;
 }
 
 /**

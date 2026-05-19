@@ -14,7 +14,10 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/platform/db/client";
 import { platformJourney, type PlatformJourney } from "@/platform/db/schema/platform";
-import { getOnboardingInitialRedirect } from "@/platform/lib/config";
+import {
+  getOnboardingInitialRedirect,
+  getOnboardingMode,
+} from "@/platform/lib/config";
 
 import {
   firstIncompleteStage,
@@ -68,14 +71,19 @@ export async function getOrCreateJourney(
  * if they haven't completed (or skipped) it. Pages INSIDE /journey/* must NOT
  * call this — they'd redirect to themselves on every load.
  *
- * Default mode is "journey" — the right answer for Sarah's local boilerplate
- * where new signups need to set up Supabase/Stripe/Resend. Admins on a public
- * marketing deployment (like codingcapybaras.com) can flip the mode to "docs"
- * in /config/onboarding so new signups land in the install-tutorial flow
- * instead. The journey UI at /journey/* still works in either mode — the
- * config only affects the auto-intercept here.
+ * Two-level config:
+ *   - `onboarding.mode` "skip" → this gate is a no-op for every user,
+ *     regardless of their platform_journey row. Used by derivative
+ *     deployments (e.g. codingcapybaras.com) where end users aren't
+ *     customizing this SaaS.
+ *   - `onboarding.mode` "journey" (default) → enforce normally, then
+ *     `onboarding.initial_redirect` decides /journey vs /docs.
  */
 export async function requireJourneyComplete(userId: string): Promise<void> {
+  // Skip mode bypasses the gate entirely — never read platform_journey,
+  // never read the initial-redirect setting (it's moot here).
+  if ((await getOnboardingMode()) === "skip") return;
+
   const journey = await getJourney(userId);
   if (!journey || journey.completedAt === null) {
     const mode = await getOnboardingInitialRedirect();

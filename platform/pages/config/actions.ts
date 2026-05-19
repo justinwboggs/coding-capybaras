@@ -167,13 +167,15 @@ export async function saveOnboardingAction(
       error: parsed.error.issues[0]?.message ?? "Invalid onboarding value.",
     };
   }
-  const { initialRedirect } = parsed.data;
+  const { mode, initialRedirect } = parsed.data;
 
   try {
     await setConfigValues([
+      { key: CONFIG_KEYS.onboardingMode, value: mode },
       { key: CONFIG_KEYS.onboardingInitialRedirect, value: initialRedirect },
     ]);
     await writeAudit(admin.id, "config.onboarding.updated", {
+      mode,
       initialRedirect,
     });
   } catch (err) {
@@ -181,8 +183,9 @@ export async function saveOnboardingAction(
     return { error: "Couldn't save onboarding setting. Please try again." };
   }
 
-  // Setting drives requireJourneyComplete() in the (authed) layout — revalidate
-  // at the layout boundary so the next /dashboard hit reads the fresh value.
+  // Settings drive requireJourneyComplete() in the (authed) layout and the
+  // /journey route's skip-mode redirect — revalidate at the layout boundary
+  // so the next dashboard/journey hit reads fresh values.
   revalidatePath("/", "layout");
   return { ok: true };
 }

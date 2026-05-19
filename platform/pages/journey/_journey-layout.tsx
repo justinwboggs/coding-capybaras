@@ -1,5 +1,8 @@
+import { redirect } from "next/navigation";
+
 import { requireAuth } from "@/platform/lib/auth";
 import { getUserPlan } from "@/platform/lib/billing";
+import { getOnboardingMode } from "@/platform/lib/config";
 import { getOrCreateJourney } from "@/platform/lib/journey/queries";
 
 import { JourneySidebar } from "./_components/journey-sidebar";
@@ -17,6 +20,11 @@ export default async function JourneyLayout({
   // The journey row materializes on first hit. Children can read it via
   // getOrCreateJourney (cached per request). Plan key drives the upgrade CTA
   // at the bottom of the sidebar — Free users see it, paid users don't.
+  //
+  // In "skip" mode the journey is disabled — covers direct deep links to
+  // /journey/[stage] that bypass page.tsx. Bounce before materializing the
+  // row so skip-mode deployments never accumulate empty journey state.
+  if ((await getOnboardingMode()) === "skip") redirect("/dashboard");
   const user = await requireAuth();
   const [journey, planKey] = await Promise.all([
     getOrCreateJourney(user.id),

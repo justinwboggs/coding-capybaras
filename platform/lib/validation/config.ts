@@ -76,9 +76,15 @@ export const featureFlagsSchema = z.object({
 export type FeatureFlagsInput = z.infer<typeof featureFlagsSchema>;
 
 // ── Onboarding ───────────────────────────────────────────────────
-// Single-key config. The mode determines where requireJourneyComplete()
-// sends users with an incomplete journey — see platform/lib/journey/queries.ts.
+// Two orthogonal keys:
+//   - `mode` toggles whether the journey gate exists at all. When "skip",
+//     requireJourneyComplete() becomes a no-op and /journey redirects to
+//     /dashboard. `initialRedirect` is moot in that case.
+//   - `initialRedirect` (only meaningful when mode is "journey") determines
+//     where requireJourneyComplete() sends users with an incomplete journey
+//     — see platform/lib/journey/queries.ts.
 export const onboardingSchema = z.object({
+  mode: z.enum(["journey", "skip"]),
   initialRedirect: z.enum(["docs", "journey"]),
 });
 export type OnboardingInput = z.infer<typeof onboardingSchema>;

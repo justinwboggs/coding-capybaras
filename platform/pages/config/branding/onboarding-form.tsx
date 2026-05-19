@@ -27,7 +27,22 @@ import {
 
 import { saveOnboardingAction } from "../actions";
 
-const OPTIONS = [
+const MODE_OPTIONS = [
+  {
+    value: "journey",
+    label: "Journey (default)",
+    description:
+      "Keep the journey gate on. New signups go through the staged setup; the destination is controlled by the Initial redirect setting below.",
+  },
+  {
+    value: "skip",
+    label: "Skip",
+    description:
+      "Bypasses the journey flow entirely. Use for deployments where users aren't customizing this SaaS (e.g., direct-to-product, or a hosted instance of this codebase).",
+  },
+] as const;
+
+const INITIAL_REDIRECT_OPTIONS = [
   {
     value: "journey",
     label: "Journey (default)",
@@ -48,6 +63,9 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
     defaultValues: initial,
   });
 
+  const mode = form.watch("mode");
+  const isSkip = mode === "skip";
+
   async function onSubmit(values: OnboardingInput) {
     const result = await saveOnboardingAction(values);
     if ("error" in result) {
@@ -58,9 +76,11 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
     }
     toast.success("Onboarding saved", {
       description:
-        values.initialRedirect === "docs"
-          ? "New signups will land in /docs."
-          : "New signups will land in /journey.",
+        values.mode === "skip"
+          ? "Journey gate disabled — new signups go straight to /dashboard."
+          : values.initialRedirect === "docs"
+            ? "New signups will land in /docs."
+            : "New signups will land in /journey.",
     });
     form.reset(values);
   }
@@ -83,12 +103,12 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
           >
             <FormField
               control={form.control}
-              name="initialRedirect"
+              name="mode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Initial redirect</FormLabel>
+                  <FormLabel>Mode</FormLabel>
                   <div className="space-y-2">
-                    {OPTIONS.map((opt) => (
+                    {MODE_OPTIONS.map((opt) => (
                       <Label
                         key={opt.value}
                         className="flex items-start gap-3 rounded-md border p-3 transition-colors has-[input:checked]:border-primary has-[input:checked]:bg-accent"
@@ -115,12 +135,58 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="initialRedirect"
+              render={({ field }) => (
+                <FormItem
+                  aria-disabled={isSkip}
+                  className={isSkip ? "opacity-50" : undefined}
+                >
+                  <FormLabel>Initial redirect</FormLabel>
+                  <div className="space-y-2">
+                    {INITIAL_REDIRECT_OPTIONS.map((opt) => (
+                      <Label
+                        key={opt.value}
+                        className="flex items-start gap-3 rounded-md border p-3 transition-colors has-[input:checked]:border-primary has-[input:checked]:bg-accent"
+                      >
+                        <input
+                          type="radio"
+                          value={opt.value}
+                          checked={field.value === opt.value}
+                          onChange={() => field.onChange(opt.value)}
+                          disabled={isSkip}
+                          className="mt-1 h-3.5 w-3.5 accent-primary"
+                        />
+                        <span className="text-sm">
+                          <span className="font-medium">{opt.label}</span>
+                          <br />
+                          <span className="text-muted-foreground">
+                            {opt.description}
+                          </span>
+                        </span>
+                      </Label>
+                    ))}
+                  </div>
+                  {isSkip ? (
+                    <p className="text-xs text-muted-foreground">
+                      Not applicable while Mode is Skip — the journey gate is
+                      off and this setting has no effect.
+                    </p>
+                  ) : null}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <p className="text-xs text-muted-foreground">
-              This setting only affects the auto-redirect off{" "}
-              <code>/dashboard</code> (and other gated pages) for users with
-              an incomplete journey. The journey UI at <code>/journey</code>{" "}
-              still works in either mode — a user who navigates there
-              directly always sees the staged setup.
+              Under <strong>Journey</strong> mode, Initial redirect controls
+              the auto-redirect off <code>/dashboard</code> (and other gated
+              pages) for users with an incomplete journey; the journey UI at{" "}
+              <code>/journey</code> renders normally. Under{" "}
+              <strong>Skip</strong> mode the gate is off entirely and{" "}
+              <code>/journey</code> server-redirects to{" "}
+              <code>/dashboard</code>.
             </p>
 
             <Button type="submit" disabled={form.formState.isSubmitting}>

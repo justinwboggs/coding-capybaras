@@ -139,10 +139,7 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
               control={form.control}
               name="initialRedirect"
               render={({ field }) => (
-                <FormItem
-                  aria-disabled={isSkip}
-                  className={isSkip ? "opacity-50" : undefined}
-                >
+                <FormItem>
                   <FormLabel>Initial redirect</FormLabel>
                   <div className="space-y-2">
                     {INITIAL_REDIRECT_OPTIONS.map((opt) => (
@@ -155,7 +152,6 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
                           value={opt.value}
                           checked={field.value === opt.value}
                           onChange={() => field.onChange(opt.value)}
-                          disabled={isSkip}
                           className="mt-1 h-3.5 w-3.5 accent-primary"
                         />
                         <span className="text-sm">
@@ -170,8 +166,9 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
                   </div>
                   {isSkip ? (
                     <p className="text-xs text-muted-foreground">
-                      Not applicable while Mode is Skip — the journey gate is
-                      off and this setting has no effect.
+                      In Skip mode, this is the post-signup destination —
+                      Docs sends new signups to <code>/docs</code>, Journey
+                      to <code>/dashboard</code>.
                     </p>
                   ) : null}
                   <FormMessage />
@@ -180,13 +177,12 @@ export function OnboardingForm({ initial }: { initial: OnboardingInput }) {
             />
 
             <p className="text-xs text-muted-foreground">
-              Under <strong>Journey</strong> mode, Initial redirect controls
-              the auto-redirect off <code>/dashboard</code> (and other gated
-              pages) for users with an incomplete journey; the journey UI at{" "}
-              <code>/journey</code> renders normally. Under{" "}
-              <strong>Skip</strong> mode the gate is off entirely and{" "}
-              <code>/journey</code> server-redirects to{" "}
-              <code>/dashboard</code>.
+              Controls where new signups land. In Journey mode this fires
+              when an incomplete-journey user hits a gated page like{" "}
+              <code>/dashboard</code>. In Skip mode it controls the
+              post-signup destination directly (since the gate is off). The{" "}
+              <code>/journey</code> route stays functional in both modes for
+              users who navigate to it explicitly.
             </p>
 
             <Button type="submit" disabled={form.formState.isSubmitting}>

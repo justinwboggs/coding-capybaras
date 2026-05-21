@@ -21,14 +21,26 @@ import { signInSchema, type SignInInput } from "@/platform/lib/validation/auth";
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
-export function SignInForm({ next }: { next?: string }) {
+export function SignInForm({
+  next,
+  intent,
+}: {
+  next?: string;
+  intent?: string;
+}) {
   const supabase = createSupabaseBrowserClient();
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // Carry ?next= through the magic-link / OAuth round-trip so the user lands
-  // back where they started (e.g. /pricing). /auth/callback validates it.
-  const callbackUrl = next
-    ? `${APP_URL}/auth/callback?next=${encodeURIComponent(next)}`
+  // Carry ?next= (and the optional post-signin ?intent=) through the
+  // magic-link / OAuth round-trip so the user lands back where they started
+  // (e.g. /pricing) or has checkout auto-triggered. /auth/callback validates
+  // both. Both sign-in methods below reuse this same callbackUrl.
+  const callbackParams = new URLSearchParams();
+  if (next) callbackParams.set("next", next);
+  if (intent) callbackParams.set("intent", intent);
+  const callbackQuery = callbackParams.toString();
+  const callbackUrl = callbackQuery
+    ? `${APP_URL}/auth/callback?${callbackQuery}`
     : `${APP_URL}/auth/callback`;
 
   const form = useForm<SignInInput>({

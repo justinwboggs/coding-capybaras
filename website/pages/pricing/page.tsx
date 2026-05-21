@@ -75,8 +75,16 @@ function formatPrice(plan: {
   return { amount, suffix: `per ${plan.interval}` };
 }
 
-export default async function PricingPage() {
-  const [plans, user] = await Promise.all([getActivePlans(), getCurrentUser()]);
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ checkout_error?: string }>;
+}) {
+  const [plans, user, { checkout_error }] = await Promise.all([
+    getActivePlans(),
+    getCurrentUser(),
+    searchParams,
+  ]);
   const currentPlan: PlanKey | null = user ? await getUserPlan(user.id) : null;
 
   return (
@@ -91,6 +99,18 @@ export default async function PricingPage() {
           COPY_TODO: short paragraph framing your pricing.
         </p>
       </div>
+
+      {/* Shown when /auth/callback's post-signin checkout intent fails — see
+          the intent=checkout_pro path in platform/pages/auth/callback/route.ts. */}
+      {checkout_error === "1" && (
+        <div
+          role="alert"
+          className="mx-auto mt-10 max-w-2xl rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+        >
+          We couldn&apos;t start checkout. Please try again, or contact us if
+          the issue persists.
+        </div>
+      )}
 
       <div className="mt-14 grid gap-6 lg:grid-cols-3">
         {plans.map((plan) => {
@@ -240,9 +260,13 @@ function PlanCta({
     );
   }
   if (!isSignedIn) {
+    // intent=checkout_pro lets /auth/callback trigger checkout straight after
+    // sign-in, so the user doesn't have to click this CTA a second time.
     return (
       <Button asChild className="w-full">
-        <Link href="/sign-in?next=/pricing">Get lifetime access</Link>
+        <Link href="/sign-in?next=/pricing&intent=checkout_pro">
+          Get lifetime access
+        </Link>
       </Button>
     );
   }

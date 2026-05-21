@@ -13,13 +13,17 @@ export const metadata = {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; intent?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, intent } = await searchParams;
   // Only honor same-origin relative paths — defends against open redirects.
   // /auth/callback re-validates the same way for the post-auth bounce.
   const safeNext =
     next && next.startsWith("/") && !next.startsWith("//") ? next : undefined;
+
+  // Post-signin checkout intent. Scoped to the single "checkout_pro" literal
+  // (Tranche 15d) — any other value is dropped so it can't reach the callback.
+  const safeIntent = intent === "checkout_pro" ? intent : undefined;
 
   // Already signed in? Send them straight on (to `next` if we have one).
   const user = await getCurrentUser();
@@ -36,7 +40,7 @@ export default async function SignInPage({
             We&apos;ll email you a magic link, or use Google.
           </p>
         </div>
-        <SignInForm next={safeNext} />
+        <SignInForm next={safeNext} intent={safeIntent} />
         <p className="text-center text-xs text-muted-foreground">
           By continuing you agree to our{" "}
           <Link href="/terms" className="underline underline-offset-2">

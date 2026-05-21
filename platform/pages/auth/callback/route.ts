@@ -4,6 +4,7 @@ import {
   getOnboardingInitialRedirect,
   getOnboardingMode,
 } from "@/platform/lib/config";
+import { createCheckoutAction } from "@/platform/pages/account/billing/actions";
 import { createSupabaseServerClient } from "@/platform/lib/supabase/server";
 
 // Where a new signup lands when there's no explicit ?next=. In journey mode
@@ -44,6 +45,21 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(
       `${origin}/sign-in?error=${encodeURIComponent(error.message)}`,
     );
+  }
+
+  // Post-signin checkout intent (Tranche 15d): a signed-out user who clicked
+  // the Pro CTA arrives here with intent=checkout_pro. Trigger checkout now so
+  // they don't have to click the CTA a second time. Scoped to "checkout_pro"
+  // by strict equality — any other value falls through to the normal redirect.
+  //
+  // createCheckoutAction redirects to Stripe on success (throws NEXT_REDIRECT,
+  // which must propagate — do NOT wrap this in try/catch) and returns { error }
+  // on failure.
+  if (searchParams.get("intent") === "checkout_pro") {
+    const result = await createCheckoutAction("pro");
+    if (result?.error) {
+      return NextResponse.redirect(`${origin}/pricing?checkout_error=1`);
+    }
   }
 
   return NextResponse.redirect(`${origin}${safeNext}`);

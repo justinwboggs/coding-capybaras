@@ -15,14 +15,56 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+// Convert a #RRGGBB hex to a shadcn-style "H S% L%" token string. Returns
+// null if the hex can't be parsed, so the caller falls back to the static
+// --primary defined in globals.css.
+function hexToHsl(hex: string): string | null {
+  const match = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!match) return null;
+
+  const int = parseInt(match[1], 16);
+  const r = ((int >> 16) & 255) / 255;
+  const g = ((int >> 8) & 255) / 255;
+  const b = (int & 255) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+
+  let h = 0;
+  let s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h /= 6;
+  }
+
+  return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { primaryColor } = await getBranding();
+  const primaryHsl = hexToHsl(primaryColor);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
+        {/* Brand primary flows config → here. globals.css holds the static
+            fallback; this :root override wins by later source order. */}
+        {primaryHsl && (
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `:root{--primary:${primaryHsl};--ring:${primaryHsl};}`,
+            }}
+          />
+        )}
         {children}
         <Toaster />
       </body>

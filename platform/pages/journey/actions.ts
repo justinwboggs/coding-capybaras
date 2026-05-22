@@ -8,7 +8,12 @@ import { eq } from "drizzle-orm";
 import { db } from "@/platform/db/client";
 import { platformAuditLog, platformJourney } from "@/platform/db/schema/platform";
 import { requireAuth } from "@/platform/lib/auth";
-import { CONFIG_KEYS, setConfigValues } from "@/platform/lib/config";
+import {
+  CONFIG_KEYS,
+  getAllConfig,
+  getBranding,
+  setConfigValues,
+} from "@/platform/lib/config";
 import { generateEnvFileTemplate } from "@/platform/lib/journey/env-templates";
 import { getOrCreateJourney } from "@/platform/lib/journey/queries";
 import {
@@ -122,20 +127,37 @@ export async function saveStageAction(input: {
         logoUrl?: string;
         tagline?: string;
       };
+      // Skip-on-no-change guard: compare each field against the value
+      // already in effect. getBranding() resolves code defaults too, so a
+      // field the user never touched (pre-filled from the current default)
+      // compares equal and is NOT written — completing the stage no longer
+      // freezes the then-current defaults into platform_config. The
+      // emptiness / string-typeof checks below are kept; the !== check is
+      // additive. (Both reads are request-cached — one DB round-trip.)
+      const resolved = await getBranding();
+      const currentTagline = (await getAllConfig())["branding.tagline"];
       const entries: { key: string; value: unknown }[] = [];
-      if (b.appName && b.appName.length > 0) {
+      if (
+        b.appName &&
+        b.appName.length > 0 &&
+        b.appName !== resolved.appName
+      ) {
         entries.push({ key: CONFIG_KEYS.brandingAppName, value: b.appName });
       }
-      if (b.primaryColor && b.primaryColor.length > 0) {
+      if (
+        b.primaryColor &&
+        b.primaryColor.length > 0 &&
+        b.primaryColor !== resolved.primaryColor
+      ) {
         entries.push({
           key: CONFIG_KEYS.brandingPrimaryColor,
           value: b.primaryColor,
         });
       }
-      if (typeof b.logoUrl === "string") {
+      if (typeof b.logoUrl === "string" && b.logoUrl !== resolved.logoUrl) {
         entries.push({ key: CONFIG_KEYS.brandingLogoUrl, value: b.logoUrl });
       }
-      if (typeof b.tagline === "string") {
+      if (typeof b.tagline === "string" && b.tagline !== currentTagline) {
         entries.push({ key: "branding.tagline", value: b.tagline });
       }
       if (entries.length > 0) await setConfigValues(entries);

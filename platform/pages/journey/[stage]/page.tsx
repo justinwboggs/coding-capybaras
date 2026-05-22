@@ -2,7 +2,7 @@ import { type Route } from "next";
 import { redirect } from "next/navigation";
 
 import { requireAuth } from "@/platform/lib/auth";
-import { getBranding } from "@/platform/lib/config";
+import { getAllConfig, getBranding } from "@/platform/lib/config";
 import { getOrCreateJourney } from "@/platform/lib/journey/queries";
 import {
   getStageDef,
@@ -74,13 +74,16 @@ export default async function JourneyStagePage({ params }: PageProps) {
       // Branding's source-of-truth is platform_config, not journey.data —
       // hydrate the form from there so revisits show the live values.
       const branding = await getBranding();
+      // tagline isn't part of getBranding()'s resolved shape — read it
+      // straight from platform_config and coalesce a missing value to "".
+      const savedTagline = (await getAllConfig())["branding.tagline"];
       return (
         <BrandingForm
           initial={{
             appName: branding.appName,
             primaryColor: branding.primaryColor,
             logoUrl: branding.logoUrl,
-            tagline: "",
+            tagline: typeof savedTagline === "string" ? savedTagline : "",
           }}
         />
       );

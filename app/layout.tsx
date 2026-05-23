@@ -76,6 +76,9 @@ export default async function RootLayout({
   // and `logo` are only included when the admin has actually set them
   // (DEFAULT_BRANDING.logoUrl is ""; getMetaDescription() returns null when
   // unset).
+  //
+  // Want SoftwareApplication / Product / FAQPage schema too? See
+  // docs/extensions/json-ld-software-application.md (and adjacent patterns).
   const websiteLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "WebSite",

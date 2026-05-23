@@ -50,8 +50,30 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { primaryColor } = await getBranding();
+  const { appName, logoUrl, primaryColor } = await getBranding();
   const primaryHsl = hexToHsl(primaryColor);
+  const siteUrl =
+    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+  // WebSite + Organization JSON-LD. Values flow from configured branding —
+  // tenants get working structured data without code changes. `description`
+  // is intentionally omitted (no metaDescription config field yet); search
+  // engines fall back to the <meta name="description"> generateMetadata
+  // already emits. `logo` is only included when an admin has actually set
+  // one (DEFAULT_BRANDING.logoUrl is "").
+  const websiteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: appName,
+    url: siteUrl,
+  };
+  const organizationLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: appName,
+    url: siteUrl,
+  };
+  if (logoUrl) organizationLd.logo = logoUrl;
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -65,6 +87,14 @@ export default async function RootLayout({
             }}
           />
         )}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}
+        />
         {children}
         <Toaster />
       </body>

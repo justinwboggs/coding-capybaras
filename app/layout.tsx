@@ -1,20 +1,30 @@
 import type { Metadata } from "next";
 
 import { Toaster } from "@/platform/components/ui/sonner";
-import { getBranding } from "@/platform/lib/config";
+import { getBranding, getMetaDescription } from "@/platform/lib/config";
 
 import "./globals.css";
 
 // Title comes from configured branding (configuration over code). Falls back
 // to the default app name if platform_config is empty or unreachable.
 export async function generateMetadata(): Promise<Metadata> {
-  const { appName } = await getBranding();
+  const [{ appName }, metaDescription] = await Promise.all([
+    getBranding(),
+    getMetaDescription(),
+  ]);
   return {
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
     ),
     title: appName,
-    description: "Ship a real, paying SaaS in a weekend.",
+    // description is omitted entirely when unset — better SEO than emitting
+    // a stale placeholder. Admins set it in /config/branding, and the same
+    // value flows to <meta name="description">, OG, Twitter, and JSON-LD.
+    ...(metaDescription && {
+      description: metaDescription,
+      openGraph: { description: metaDescription },
+      twitter: { description: metaDescription },
+    }),
   };
 }
 
@@ -53,23 +63,26 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { appName, logoUrl, primaryColor } = await getBranding();
+  const [{ appName, logoUrl, primaryColor }, metaDescription] = await Promise.all([
+    getBranding(),
+    getMetaDescription(),
+  ]);
   const primaryHsl = hexToHsl(primaryColor);
   const siteUrl =
     process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
   // WebSite + Organization JSON-LD. Values flow from configured branding —
   // tenants get working structured data without code changes. `description`
-  // is intentionally omitted (no metaDescription config field yet); search
-  // engines fall back to the <meta name="description"> generateMetadata
-  // already emits. `logo` is only included when an admin has actually set
-  // one (DEFAULT_BRANDING.logoUrl is "").
-  const websiteLd = {
+  // and `logo` are only included when the admin has actually set them
+  // (DEFAULT_BRANDING.logoUrl is ""; getMetaDescription() returns null when
+  // unset).
+  const websiteLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: appName,
     url: siteUrl,
   };
+  if (metaDescription) websiteLd.description = metaDescription;
   const organizationLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -77,6 +90,7 @@ export default async function RootLayout({
     url: siteUrl,
   };
   if (logoUrl) organizationLd.logo = logoUrl;
+  if (metaDescription) organizationLd.description = metaDescription;
 
   return (
     <html lang="en" suppressHydrationWarning>

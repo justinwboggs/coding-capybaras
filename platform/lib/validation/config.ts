@@ -19,6 +19,13 @@ export const brandingSchema = z.object({
     .trim()
     .url("Must be a valid URL")
     .or(z.literal("")),
+  metaDescription: z
+    .string()
+    .trim()
+    .max(
+      200,
+      "Keep it under 200 characters (160 is Google's truncation threshold)",
+    ),
 });
 export type BrandingInput = z.infer<typeof brandingSchema>;
 

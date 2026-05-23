@@ -18,6 +18,11 @@ export const CONFIG_KEYS = {
   brandingAppName: "branding.app_name",
   brandingPrimaryColor: "branding.primary_color",
   brandingLogoUrl: "branding.logo_url",
+  // SEO meta description, surfaced in <meta name="description">,
+  // openGraph.description, twitter.description, and WebSite/Organization
+  // JSON-LD. No default (kept out of DEFAULT_BRANDING/getBranding) — when
+  // unset, consumers omit the field entirely rather than emit a placeholder.
+  brandingMetaDescription: "branding.meta_description",
   // Where requireJourneyComplete() sends users with an incomplete journey.
   // "journey" (default) is the right answer for Sarah's local boilerplate.
   // "docs" is the right answer for codingcapybaras.com itself, where new
@@ -145,6 +150,18 @@ export async function getBranding(): Promise<Branding> {
     ),
     logoUrl: str(CONFIG_KEYS.brandingLogoUrl, DEFAULT_BRANDING.logoUrl),
   };
+}
+
+/**
+ * Configured SEO meta description, or null if unset. Read separately from
+ * getBranding() because there's no sensible hardcoded default — a missing
+ * value means "omit the meta tag", not "fall back to a string". Cached per
+ * request via getAllConfig().
+ */
+export async function getMetaDescription(): Promise<string | null> {
+  const all = await getAllConfig();
+  const v = all[CONFIG_KEYS.brandingMetaDescription];
+  return typeof v === "string" && v.trim().length > 0 ? v.trim() : null;
 }
 
 /**

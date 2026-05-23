@@ -49,18 +49,20 @@ export async function saveBrandingAction(
       error: parsed.error.issues[0]?.message ?? "Invalid branding values.",
     };
   }
-  const { appName, primaryColor, logoUrl } = parsed.data;
+  const { appName, primaryColor, logoUrl, metaDescription } = parsed.data;
 
   try {
     await setConfigValues([
       { key: CONFIG_KEYS.brandingAppName, value: appName },
       { key: CONFIG_KEYS.brandingPrimaryColor, value: primaryColor },
       { key: CONFIG_KEYS.brandingLogoUrl, value: logoUrl },
+      { key: CONFIG_KEYS.brandingMetaDescription, value: metaDescription },
     ]);
     await writeAudit(admin.id, "config.branding.updated", {
       appName,
       primaryColor,
       logoUrl,
+      metaDescription,
     });
   } catch (err) {
     console.error("[config] saveBrandingAction failed", err);

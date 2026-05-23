@@ -18,12 +18,10 @@ export function BrandingPreview({
   appName,
   primaryColor,
   logoUrl,
-  metaDescription,
 }: {
   appName: string;
   primaryColor: string;
   logoUrl: string;
-  metaDescription: string;
 }) {
   // Track the specific URL that failed to load, so editing to a new URL
   // re-attempts the render instead of staying suppressed.
@@ -34,7 +32,6 @@ export function BrandingPreview({
   const color = HEX_RE.test(primaryColor) ? primaryColor : "#000000";
   const trimmedLogo = logoUrl.trim();
   const showLogo = trimmedLogo.length > 0 && brokenUrl !== trimmedLogo;
-  const trimmedDescription = metaDescription.trim();
 
   return (
     <Card className="h-fit">
@@ -61,12 +58,6 @@ export function BrandingPreview({
             {appName.trim() || "Your app name"}
           </span>
         </div>
-
-        {trimmedDescription && (
-          <p className="line-clamp-2 text-sm text-muted-foreground">
-            {trimmedDescription}
-          </p>
-        )}
 
         {/* Inline backgroundColor (not bg-primary) so the button reflects the
             edited, not-yet-saved color. */}

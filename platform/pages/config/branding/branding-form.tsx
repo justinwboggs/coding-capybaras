@@ -22,7 +22,6 @@ import {
   FormMessage,
 } from "@/platform/components/ui/form";
 import { Input } from "@/platform/components/ui/input";
-import { Textarea } from "@/platform/components/ui/textarea";
 import { brandingSchema, type BrandingInput } from "@/platform/lib/validation/config";
 
 import { saveBrandingAction } from "../actions";
@@ -140,45 +139,6 @@ export function BrandingForm({ initial }: { initial: BrandingInput }) {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="metaDescription"
-                render={({ field }) => {
-                  const len = field.value?.length ?? 0;
-                  const over = len > 160;
-                  return (
-                    <FormItem>
-                      <FormLabel>Meta description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          rows={3}
-                          placeholder="A one-or-two-sentence summary of what your product does and who it's for."
-                          {...field}
-                        />
-                      </FormControl>
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="text-xs text-muted-foreground">
-                          Used in the page &lt;meta name=&quot;description&quot;&gt;, OG
-                          and Twitter cards, and structured data. Leave blank to
-                          omit the tag entirely.
-                        </p>
-                        <p
-                          className={
-                            over
-                              ? "shrink-0 text-xs text-destructive"
-                              : "shrink-0 text-xs text-muted-foreground"
-                          }
-                          aria-live="polite"
-                        >
-                          {len} / 160
-                        </p>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Saving…" : "Save branding"}
               </Button>
@@ -204,7 +164,6 @@ export function BrandingForm({ initial }: { initial: BrandingInput }) {
         appName={watched.appName}
         primaryColor={watched.primaryColor}
         logoUrl={watched.logoUrl}
-        metaDescription={watched.metaDescription}
       />
     </div>
   );

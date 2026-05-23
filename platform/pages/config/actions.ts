@@ -9,6 +9,7 @@ import { requireAdmin } from "@/platform/lib/auth";
 import { FEATURE_KEYS } from "@/platform/lib/billing";
 import { CONFIG_KEYS, setConfigValues } from "@/platform/lib/config";
 import { emailConfigKeys } from "@/platform/lib/email/templates";
+import { getTier, tierMeets } from "@/platform/lib/tier";
 import {
   brandingSchema,
   emailTemplatesFormSchema,
@@ -49,18 +50,71 @@ export async function saveBrandingAction(
       error: parsed.error.issues[0]?.message ?? "Invalid branding values.",
     };
   }
-  const { appName, primaryColor, logoUrl } = parsed.data;
+  const {
+    appName,
+    primaryColor,
+    logoUrl,
+    backgroundColor,
+    fontFamily,
+    borderRadius,
+    foregroundColor,
+    mutedColor,
+    accentColor,
+    borderColor,
+    headingFontFamily,
+    fontScale,
+    customCss,
+  } = parsed.data;
+
+  // L3 fields are tier-gated. The form disables them on Free at the UI
+  // layer; this is the defensive backstop — a tampered client submission
+  // with L3 values populated is silently filtered, not hard-rejected.
+  const tier = getTier();
+  const hasPro = tierMeets(tier, "pro");
 
   try {
-    await setConfigValues([
+    const entries: { key: string; value: unknown }[] = [
       { key: CONFIG_KEYS.brandingAppName, value: appName },
       { key: CONFIG_KEYS.brandingPrimaryColor, value: primaryColor },
       { key: CONFIG_KEYS.brandingLogoUrl, value: logoUrl },
-    ]);
+      // L2 — Free tier, always written.
+      { key: CONFIG_KEYS.brandingBackgroundColor, value: backgroundColor },
+      { key: CONFIG_KEYS.brandingFontFamily, value: fontFamily },
+      { key: CONFIG_KEYS.brandingBorderRadius, value: borderRadius },
+    ];
+    if (hasPro) {
+      entries.push(
+        { key: CONFIG_KEYS.brandingForegroundColor, value: foregroundColor },
+        { key: CONFIG_KEYS.brandingMutedColor, value: mutedColor },
+        { key: CONFIG_KEYS.brandingAccentColor, value: accentColor },
+        { key: CONFIG_KEYS.brandingBorderColor, value: borderColor },
+        {
+          key: CONFIG_KEYS.brandingHeadingFontFamily,
+          value: headingFontFamily,
+        },
+        { key: CONFIG_KEYS.brandingFontScale, value: fontScale },
+        { key: CONFIG_KEYS.brandingCustomCss, value: customCss },
+      );
+    }
+    await setConfigValues(entries);
     await writeAudit(admin.id, "config.branding.updated", {
+      tier,
       appName,
       primaryColor,
       logoUrl,
+      backgroundColor,
+      fontFamily,
+      borderRadius,
+      ...(hasPro && {
+        foregroundColor,
+        mutedColor,
+        accentColor,
+        borderColor,
+        headingFontFamily,
+        fontScale,
+        // customCss can be long — log its length, not its body.
+        customCssLength: customCss.length,
+      }),
     });
   } catch (err) {
     console.error("[config] saveBrandingAction failed", err);

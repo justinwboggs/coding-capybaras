@@ -18,6 +18,19 @@ export const CONFIG_KEYS = {
   brandingAppName: "branding.app_name",
   brandingPrimaryColor: "branding.primary_color",
   brandingLogoUrl: "branding.logo_url",
+  // L2 (Free tier) — theme tokens beyond primary color.
+  brandingBackgroundColor: "branding.background_color",
+  brandingFontFamily: "branding.font_family",
+  brandingBorderRadius: "branding.border_radius",
+  // L3 (Pro-gated) — full token overrides + advanced typography + custom CSS.
+  // Empty string ⇒ "no override" (consumers omit the rule).
+  brandingForegroundColor: "branding.foreground_color",
+  brandingMutedColor: "branding.muted_color",
+  brandingAccentColor: "branding.accent_color",
+  brandingBorderColor: "branding.border_color",
+  brandingHeadingFontFamily: "branding.heading_font_family",
+  brandingFontScale: "branding.font_scale",
+  brandingCustomCss: "branding.custom_css",
   // Where requireJourneyComplete() sends users with an incomplete journey.
   // "journey" (default) is the right answer for Sarah's local boilerplate.
   // "docs" is the right answer for codingcapybaras.com itself, where new
@@ -43,6 +56,68 @@ export const DEFAULT_BRANDING: Branding = {
   appName: "Your SaaS",
   primaryColor: "#18181b",
   logoUrl: "",
+};
+
+/** Font family presets the GUI offers. "system" / "serif" are CSS stacks
+ *  with no remote load; "inter" / "geist" trigger a Google Fonts <link>. */
+export type FontFamily = "system" | "inter" | "geist" | "serif";
+export const FONT_FAMILIES: readonly FontFamily[] = [
+  "system",
+  "inter",
+  "geist",
+  "serif",
+] as const;
+
+/** Border radius presets. Maps to --radius via BORDER_RADIUS_REMS. */
+export type BorderRadius = "none" | "sm" | "md" | "lg";
+export const BORDER_RADII: readonly BorderRadius[] = [
+  "none",
+  "sm",
+  "md",
+  "lg",
+] as const;
+export const BORDER_RADIUS_REMS: Record<BorderRadius, string> = {
+  none: "0",
+  sm: "0.25rem",
+  md: "0.5rem",
+  lg: "0.875rem",
+};
+
+/**
+ * Full branding read used by the admin form, live preview, and the
+ * runtime <style> injection in app/layout.tsx. Extends Branding with
+ * L2 (Free) and L3 (Pro-gated) fields. L3 fields are empty-string ⇒
+ * "no override" — consumers omit the corresponding CSS rule.
+ */
+export interface BrandingExtended extends Branding {
+  // L2 — Free tier
+  backgroundColor: string;
+  fontFamily: FontFamily;
+  borderRadius: BorderRadius;
+  // L3 — Pro-gated. "" means "no override" (consumers omit the rule).
+  foregroundColor: string;
+  mutedColor: string;
+  accentColor: string;
+  borderColor: string;
+  // headingFontFamily "" means "inherit body font"
+  headingFontFamily: FontFamily | "";
+  // fontScale 1.0 = no change. Range enforced by Zod (0.875–1.25).
+  fontScale: number;
+  customCss: string;
+}
+
+export const DEFAULT_BRANDING_EXTENDED: BrandingExtended = {
+  ...DEFAULT_BRANDING,
+  backgroundColor: "#ffffff",
+  fontFamily: "system",
+  borderRadius: "md",
+  foregroundColor: "",
+  mutedColor: "",
+  accentColor: "",
+  borderColor: "",
+  headingFontFamily: "",
+  fontScale: 1,
+  customCss: "",
 };
 
 /** Where new signups go before they've completed the staged journey. */
@@ -144,6 +219,79 @@ export async function getBranding(): Promise<Branding> {
       DEFAULT_BRANDING.primaryColor,
     ),
     logoUrl: str(CONFIG_KEYS.brandingLogoUrl, DEFAULT_BRANDING.logoUrl),
+  };
+}
+
+/**
+ * Branding + L2/L3 fields, with defaults filled in. Used by the admin
+ * form, live preview, and app/layout.tsx <style> injection. Consumers
+ * that only need the title/logo (e.g. generateMetadata) should keep
+ * using getBranding() — this is the heavier read.
+ */
+export async function getBrandingExtended(): Promise<BrandingExtended> {
+  const all = await getAllConfig();
+  const str = (key: string, fallback: string) => {
+    const v = all[key];
+    return typeof v === "string" && v.length > 0 ? v : fallback;
+  };
+  const enumVal = <T extends string>(
+    key: string,
+    allowed: readonly T[],
+    fallback: T,
+  ): T => {
+    const v = all[key];
+    return typeof v === "string" && (allowed as readonly string[]).includes(v)
+      ? (v as T)
+      : fallback;
+  };
+  const headingFont = (): FontFamily | "" => {
+    const v = all[CONFIG_KEYS.brandingHeadingFontFamily];
+    if (v === "" || v === undefined || v === null) return "";
+    return (FONT_FAMILIES as readonly string[]).includes(v as string)
+      ? (v as FontFamily)
+      : "";
+  };
+  const num = (key: string, fallback: number): number => {
+    const v = all[key];
+    return typeof v === "number" && Number.isFinite(v) ? v : fallback;
+  };
+  // L3 hex fields are stored as "" when unset — keep "" through the
+  // pipeline so layout.tsx can omit the rule.
+  const hexOrEmpty = (key: string): string => {
+    const v = all[key];
+    return typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v) ? v : "";
+  };
+  return {
+    appName: str(CONFIG_KEYS.brandingAppName, DEFAULT_BRANDING.appName),
+    primaryColor: str(
+      CONFIG_KEYS.brandingPrimaryColor,
+      DEFAULT_BRANDING.primaryColor,
+    ),
+    logoUrl: str(CONFIG_KEYS.brandingLogoUrl, DEFAULT_BRANDING.logoUrl),
+    backgroundColor: str(
+      CONFIG_KEYS.brandingBackgroundColor,
+      DEFAULT_BRANDING_EXTENDED.backgroundColor,
+    ),
+    fontFamily: enumVal(
+      CONFIG_KEYS.brandingFontFamily,
+      FONT_FAMILIES,
+      DEFAULT_BRANDING_EXTENDED.fontFamily,
+    ),
+    borderRadius: enumVal(
+      CONFIG_KEYS.brandingBorderRadius,
+      BORDER_RADII,
+      DEFAULT_BRANDING_EXTENDED.borderRadius,
+    ),
+    foregroundColor: hexOrEmpty(CONFIG_KEYS.brandingForegroundColor),
+    mutedColor: hexOrEmpty(CONFIG_KEYS.brandingMutedColor),
+    accentColor: hexOrEmpty(CONFIG_KEYS.brandingAccentColor),
+    borderColor: hexOrEmpty(CONFIG_KEYS.brandingBorderColor),
+    headingFontFamily: headingFont(),
+    fontScale: num(
+      CONFIG_KEYS.brandingFontScale,
+      DEFAULT_BRANDING_EXTENDED.fontScale,
+    ),
+    customCss: str(CONFIG_KEYS.brandingCustomCss, ""),
   };
 }
 

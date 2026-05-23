@@ -5,7 +5,18 @@ import { z } from "zod";
 // the server never trusts what the client sends.
 
 // ── Branding ─────────────────────────────────────────────────────
+// L1 = always-on identity fields; L2 = Free-tier theme additions;
+// L3 = Pro-gated. The full schema is uniform regardless of tier — the
+// server action (saveBrandingAction) silently drops L3 entries when
+// the deployment isn't on Pro+. The form mirrors this by disabling
+// L3 inputs at the UI layer.
+const hexOrEmpty = z
+  .string()
+  .regex(/^#[0-9a-fA-F]{6}$/, "Must be a 6-digit hex color, e.g. #1e3a6d")
+  .or(z.literal(""));
+
 export const brandingSchema = z.object({
+  // L1 — identity
   appName: z
     .string()
     .trim()
@@ -14,11 +25,28 @@ export const brandingSchema = z.object({
   primaryColor: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/, "Must be a 6-digit hex color, e.g. #1e3a6d"),
-  logoUrl: z
+  logoUrl: z.string().trim().url("Must be a valid URL").or(z.literal("")),
+  // L2 — Free tier
+  backgroundColor: z
     .string()
-    .trim()
-    .url("Must be a valid URL")
+    .regex(/^#[0-9a-fA-F]{6}$/, "Must be a 6-digit hex color, e.g. #ffffff"),
+  fontFamily: z.enum(["system", "inter", "geist", "serif"]),
+  borderRadius: z.enum(["none", "sm", "md", "lg"]),
+  // L3 — Pro-gated (empty string ⇒ no override)
+  foregroundColor: hexOrEmpty,
+  mutedColor: hexOrEmpty,
+  accentColor: hexOrEmpty,
+  borderColor: hexOrEmpty,
+  headingFontFamily: z
+    .enum(["system", "inter", "geist", "serif"])
     .or(z.literal("")),
+  fontScale: z.coerce
+    .number()
+    .min(0.875, "Smallest supported scale is 0.875×")
+    .max(1.25, "Largest supported scale is 1.25×"),
+  customCss: z
+    .string()
+    .max(8000, "Keep custom CSS under 8000 characters"),
 });
 export type BrandingInput = z.infer<typeof brandingSchema>;
 

@@ -10,6 +10,9 @@ import "./globals.css";
 export async function generateMetadata(): Promise<Metadata> {
   const { appName } = await getBranding();
   return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+    ),
     title: appName,
     description: "Ship a real, paying SaaS in a weekend.",
   };

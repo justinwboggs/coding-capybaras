@@ -26,7 +26,7 @@ import { Input } from "@/platform/components/ui/input";
 import { Label } from "@/platform/components/ui/label";
 import { Textarea } from "@/platform/components/ui/textarea";
 import { brandingSchema, type BrandingInput } from "@/platform/lib/validation/config";
-import { tierMeets, type Tier } from "@/platform/lib/tier";
+import { tierMeets, type Tier } from "@/platform/lib/tier/predicates";
 
 import { saveBrandingAction } from "../actions";
 import { BrandingPreview } from "./branding-preview";

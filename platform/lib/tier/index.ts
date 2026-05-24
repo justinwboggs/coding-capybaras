@@ -6,16 +6,17 @@ import "server-only";
 // the real license system (Tranche 18), at which point this module
 // will read from /platform/lib/license/ with env var as a fallback.
 //
-// Tier ordering: free < pro < business. Higher tiers include
-// everything below them (tierMeets(current, required) is monotonic).
+// Pure-data parts (Tier type, DEFAULT_TIER, tierMeets predicate) live
+// in ./predicates so client components can import them without
+// tripping the Server Components boundary check on this file. They're
+// re-exported here so server callers can keep importing from
+// @/platform/lib/tier unchanged.
 // ─────────────────────────────────────────────────────────────────
 
-export type Tier = "free" | "pro" | "business";
-
-export const DEFAULT_TIER: Tier = "free";
+import { type Tier, DEFAULT_TIER, tierMeets } from "./predicates";
+export { type Tier, DEFAULT_TIER, tierMeets };
 
 const VALID_TIERS = new Set<Tier>(["free", "pro", "business"]);
-const RANK: Record<Tier, number> = { free: 0, pro: 1, business: 2 };
 
 // Memoize at module level: env vars don't change at runtime, and this
 // keeps the invalid-value warning from firing on every call.
@@ -39,14 +40,6 @@ export function getTier(): Tier {
     cached = DEFAULT_TIER;
   }
   return cached;
-}
-
-/**
- * Predicate: is `current` at least `required`? Use in server components
- * to decide whether to render locked vs unlocked UI.
- */
-export function tierMeets(current: Tier, required: Tier): boolean {
-  return RANK[current] >= RANK[required];
 }
 
 /**

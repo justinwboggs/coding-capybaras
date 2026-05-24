@@ -27,6 +27,13 @@ export const platformUsers = pgTable("platform_users", {
     .references(() => authUsers.id, { onDelete: "cascade" }),
   email: text("email").notNull().unique(),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Admin-controlled tier override (Tranche 17). NULL = derive entitlement
+  // from platform_subscriptions normally; non-null = force this plan key
+  // regardless of subscription state. FK is enforced via the manual
+  // migration in 0004_admin_overrides.sql — drizzle-kit doesn't manage
+  // platform_plans (text PK with FK), so we declare the column shape here
+  // and rely on the migration for the constraint.
+  manualPlanOverride: text("manual_plan_override"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

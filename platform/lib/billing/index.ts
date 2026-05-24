@@ -18,6 +18,7 @@ import {
   platformPaymentCustomers,
   platformPlans,
   platformSubscriptions,
+  platformUsers,
   type PlatformPaymentCustomer,
   type PlatformPlan,
   type PlatformSubscription,
@@ -151,11 +152,28 @@ export const getUserSubscription = cache(
 );
 
 /**
- * The plan the user is currently *entitled* to: the plan key of an
- * active/trialing subscription, or 'free' otherwise. This is the
- * entitlement answer — not "what they once signed up for". Cached per request.
+ * The plan the user is currently *entitled* to. Resolution order:
+ *  1. platform_users.manual_plan_override — admin-controlled hard override
+ *     (Tranche 17). When set, returned regardless of subscription state.
+ *     Used to grant a tier without involving Stripe.
+ *  2. The plan key of an active/trialing/past_due subscription.
+ *  3. Otherwise 'free'.
+ *
+ * This is the entitlement answer — not "what they once signed up for".
+ * Cached per request.
  */
 export const getUserPlan = cache(async (userId: string): Promise<PlanKey> => {
+  // Override takes precedence. One indexed PK lookup; cheap.
+  const [user] = await db
+    .select({ override: platformUsers.manualPlanOverride })
+    .from(platformUsers)
+    .where(eq(platformUsers.id, userId))
+    .limit(1);
+  const override = user?.override;
+  if (override === "free" || override === "pro" || override === "business") {
+    return override;
+  }
+
   const sub = await getUserSubscription(userId);
   if (sub && ENTITLED_STATUSES.has(sub.status)) {
     return sub.planKey as PlanKey;

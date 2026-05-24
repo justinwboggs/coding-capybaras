@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import Link from "next/link";
 
 import {
@@ -75,9 +76,9 @@ export default async function AdminAuditLogPage({ searchParams }: PageProps) {
                   <td className="px-4 py-2 font-mono text-xs">{row.action}</td>
                   <td className="px-4 py-2 text-xs">
                     <Link
-                      href={`/admin/audit-log?resource=${encodeURIComponent(
-                        row.resourceType,
-                      )}`}
+                      href={
+                        `/admin/audit-log?resource=${encodeURIComponent(row.resourceType)}` as Route
+                      }
                       className="underline-offset-2 hover:underline"
                     >
                       {row.resourceType}
@@ -91,7 +92,7 @@ export default async function AdminAuditLogPage({ searchParams }: PageProps) {
                   <td className="px-4 py-2 text-xs">
                     {row.userId ? (
                       <Link
-                        href={`/admin/users/${row.userId}`}
+                        href={`/admin/users/${row.userId}` as Route}
                         className="font-mono underline-offset-2 hover:underline"
                       >
                         {row.userId.slice(0, 8)}…
@@ -176,7 +177,7 @@ function PageLink({
     : "/admin/audit-log";
   return (
     <Link
-      href={href}
+      href={href as Route}
       className="rounded-md border px-3 py-1 text-xs font-medium hover:bg-accent"
     >
       {label}

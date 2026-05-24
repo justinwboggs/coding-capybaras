@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import Link from "next/link";
 import { Lock } from "lucide-react";
 
@@ -85,7 +86,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
             return (
               <Link
                 key={f.value}
-                href={href}
+                href={href as Route}
                 className={cn(
                   "rounded-md border px-3 py-1 text-xs font-medium transition-colors",
                   active
@@ -151,7 +152,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
                 >
                   <td className="px-4 py-2">
                     <Link
-                      href={`/admin/users/${u.id}`}
+                      href={`/admin/users/${u.id}` as Route}
                       className="font-medium underline-offset-2 hover:underline"
                     >
                       {u.email}
@@ -252,7 +253,7 @@ function PageLink({
     : "/admin/users";
   return (
     <Link
-      href={href}
+      href={href as Route}
       className="rounded-md border px-3 py-1 text-xs font-medium hover:bg-accent"
     >
       {label}

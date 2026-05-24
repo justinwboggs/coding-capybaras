@@ -13,7 +13,7 @@ import {
   BORDER_RADIUS_REMS,
   type BorderRadius,
   type FontFamily,
-} from "@/platform/lib/config";
+} from "@/platform/lib/config/branding-tokens";
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 

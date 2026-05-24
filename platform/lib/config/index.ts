@@ -58,29 +58,26 @@ export const DEFAULT_BRANDING: Branding = {
   logoUrl: "",
 };
 
-/** Font family presets the GUI offers. "system" / "serif" are CSS stacks
- *  with no remote load; "inter" / "geist" trigger a Google Fonts <link>. */
-export type FontFamily = "system" | "inter" | "geist" | "serif";
-export const FONT_FAMILIES: readonly FontFamily[] = [
-  "system",
-  "inter",
-  "geist",
-  "serif",
-] as const;
-
-/** Border radius presets. Maps to --radius via BORDER_RADIUS_REMS. */
-export type BorderRadius = "none" | "sm" | "md" | "lg";
-export const BORDER_RADII: readonly BorderRadius[] = [
-  "none",
-  "sm",
-  "md",
-  "lg",
-] as const;
-export const BORDER_RADIUS_REMS: Record<BorderRadius, string> = {
-  none: "0",
-  sm: "0.25rem",
-  md: "0.5rem",
-  lg: "0.875rem",
+// Pure-data branding token primitives. The definitions live in
+// ./branding-tokens (no "server-only" import) so client components like
+// branding-preview can pull the same values without tripping the Server
+// Components boundary check. They're imported here both for local use
+// (getBrandingExtended below references FONT_FAMILIES / BORDER_RADII) and
+// re-exported so server callers can keep importing from
+// @/platform/lib/config unchanged.
+import {
+  type FontFamily,
+  FONT_FAMILIES,
+  type BorderRadius,
+  BORDER_RADII,
+  BORDER_RADIUS_REMS,
+} from "./branding-tokens";
+export {
+  type FontFamily,
+  FONT_FAMILIES,
+  type BorderRadius,
+  BORDER_RADII,
+  BORDER_RADIUS_REMS,
 };
 
 /**

@@ -26,6 +26,16 @@ export const brandingSchema = z.object({
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/, "Must be a 6-digit hex color, e.g. #1e3a6d"),
   logoUrl: z.string().trim().url("Must be a valid URL").or(z.literal("")),
+  // L1 — used in Terms of Service and other legal copy. Tenant MUST set this
+  // to their registered business name before launch; the default
+  // "[YOUR COMPANY NAME]" placeholder makes an unconfigured ToS visible.
+  legalEntityName: z
+    .string()
+    .trim()
+    .min(1, "Legal entity name is required")
+    .max(120, "Keep it under 120 characters"),
+  // L1 — opt-in "Built by Coding Capybaras" marketing-footer badge.
+  attribution: z.boolean(),
   // L2 — Free tier
   backgroundColor: z
     .string()

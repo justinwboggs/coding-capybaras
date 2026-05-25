@@ -11,7 +11,7 @@ export default async function MarketingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { appName } = await getBranding();
+  const { appName, attribution } = await getBranding();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -39,7 +39,7 @@ export default async function MarketingLayout({
         <div className="container flex flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
             <span>&copy; {new Date().getFullYear()} {appName}</span>
-            <BuiltByCodingCapybaras />
+            {attribution && <BuiltByCodingCapybaras />}
           </div>
           <nav className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <Link href="/pricing" className="hover:text-foreground">

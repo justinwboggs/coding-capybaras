@@ -18,6 +18,16 @@ export const CONFIG_KEYS = {
   brandingAppName: "branding.app_name",
   brandingPrimaryColor: "branding.primary_color",
   brandingLogoUrl: "branding.logo_url",
+  // L1 — set in the journey's Branding stage; surfaced as <meta name="description">
+  // and OG/Twitter description in the marketing site.
+  brandingTagline: "branding.tagline",
+  // L1 — opt-in attribution badge in the marketing footer. Default off so
+  // tenants don't accidentally credit the boilerplate maintainers.
+  brandingAttribution: "branding.attribution",
+  // L1 — used in Terms of Service Section 11 (Limitation of Liability) and
+  // any other legal copy that needs the registered business name.
+  // COPY_TODO: tenant MUST set this before launch.
+  brandingLegalEntityName: "branding.legal_entity_name",
   // L2 (Free tier) — theme tokens beyond primary color.
   brandingBackgroundColor: "branding.background_color",
   brandingFontFamily: "branding.font_family",
@@ -48,6 +58,9 @@ export interface Branding {
   appName: string;
   primaryColor: string;
   logoUrl: string;
+  tagline: string;
+  attribution: boolean;
+  legalEntityName: string;
 }
 
 // Defaults used until an admin saves a value in /config/branding.
@@ -56,6 +69,12 @@ export const DEFAULT_BRANDING: Branding = {
   appName: "Your SaaS",
   primaryColor: "#18181b",
   logoUrl: "",
+  tagline: "",
+  attribution: false,
+  // COPY_TODO: tenant MUST set this to their registered business name before
+  // launch. The deliberately-obvious placeholder makes an unconfigured ToS
+  // visible at a glance.
+  legalEntityName: "[YOUR COMPANY NAME]",
 };
 
 // Pure-data branding token primitives. The definitions live in
@@ -209,6 +228,17 @@ export async function getBranding(): Promise<Branding> {
     const v = all[key];
     return typeof v === "string" && v.length > 0 ? v : fallback;
   };
+  // Tagline gets the looser "string or empty" treatment — empty IS a valid
+  // tenant-set value (no description). Same for legalEntityName, which has
+  // a non-empty placeholder default so unset reads as the COPY_TODO marker.
+  const strAllowEmpty = (key: string, fallback: string) => {
+    const v = all[key];
+    return typeof v === "string" ? v : fallback;
+  };
+  const bool = (key: string, fallback: boolean) => {
+    const v = all[key];
+    return typeof v === "boolean" ? v : fallback;
+  };
   return {
     appName: str(CONFIG_KEYS.brandingAppName, DEFAULT_BRANDING.appName),
     primaryColor: str(
@@ -216,6 +246,18 @@ export async function getBranding(): Promise<Branding> {
       DEFAULT_BRANDING.primaryColor,
     ),
     logoUrl: str(CONFIG_KEYS.brandingLogoUrl, DEFAULT_BRANDING.logoUrl),
+    tagline: strAllowEmpty(
+      CONFIG_KEYS.brandingTagline,
+      DEFAULT_BRANDING.tagline,
+    ),
+    attribution: bool(
+      CONFIG_KEYS.brandingAttribution,
+      DEFAULT_BRANDING.attribution,
+    ),
+    legalEntityName: str(
+      CONFIG_KEYS.brandingLegalEntityName,
+      DEFAULT_BRANDING.legalEntityName,
+    ),
   };
 }
 
@@ -258,6 +300,14 @@ export async function getBrandingExtended(): Promise<BrandingExtended> {
     const v = all[key];
     return typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v) ? v : "";
   };
+  const strAllowEmpty = (key: string, fallback: string) => {
+    const v = all[key];
+    return typeof v === "string" ? v : fallback;
+  };
+  const bool = (key: string, fallback: boolean) => {
+    const v = all[key];
+    return typeof v === "boolean" ? v : fallback;
+  };
   return {
     appName: str(CONFIG_KEYS.brandingAppName, DEFAULT_BRANDING.appName),
     primaryColor: str(
@@ -265,6 +315,18 @@ export async function getBrandingExtended(): Promise<BrandingExtended> {
       DEFAULT_BRANDING.primaryColor,
     ),
     logoUrl: str(CONFIG_KEYS.brandingLogoUrl, DEFAULT_BRANDING.logoUrl),
+    tagline: strAllowEmpty(
+      CONFIG_KEYS.brandingTagline,
+      DEFAULT_BRANDING.tagline,
+    ),
+    attribution: bool(
+      CONFIG_KEYS.brandingAttribution,
+      DEFAULT_BRANDING.attribution,
+    ),
+    legalEntityName: str(
+      CONFIG_KEYS.brandingLegalEntityName,
+      DEFAULT_BRANDING.legalEntityName,
+    ),
     backgroundColor: str(
       CONFIG_KEYS.brandingBackgroundColor,
       DEFAULT_BRANDING_EXTENDED.backgroundColor,

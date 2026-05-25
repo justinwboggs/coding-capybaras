@@ -14,13 +14,13 @@ import "./globals.css";
 // Title comes from configured branding (configuration over code). Falls back
 // to the default app name if platform_config is empty or unreachable.
 export async function generateMetadata(): Promise<Metadata> {
-  const { appName } = await getBranding();
+  const { appName, tagline } = await getBranding();
   return {
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
     ),
     title: appName,
-    description: "Ship a real, paying SaaS in a weekend.",
+    description: tagline || "A modern SaaS application.",
   };
 }
 

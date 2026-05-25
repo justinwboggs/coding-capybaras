@@ -1,3 +1,5 @@
+import { getBranding } from "@/platform/lib/config";
+
 export const metadata = {
   // COPY_TODO: page title — include your business name.
   title: "Terms of Service",
@@ -9,7 +11,11 @@ export const metadata = {
 // mailing address, governing state, arbitration body) before public launch.
 // Review with a lawyer before relying on this template for a live business.
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const { legalEntityName } = await getBranding();
+  // Section 11 (Limitation of Liability) is uppercase block text by drafting
+  // convention; uppercase the legalEntityName to match the surrounding style.
+  const legalEntityNameUpper = legalEntityName.toUpperCase();
   return (
     <article className="container max-w-3xl space-y-6 px-4 py-16 sm:px-6 sm:py-20 [&_h2]:pt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:pt-3 [&_h3]:text-lg [&_h3]:font-semibold [&_p]:leading-relaxed [&_p]:text-foreground/90 [&_ul]:ml-6 [&_ul]:list-disc [&_ul]:space-y-1.5 [&_ul]:text-foreground/90">
       <header className="space-y-2 border-b pb-6">
@@ -222,9 +228,9 @@ export default function TermsPage() {
 
       <h2>11. Limitation of Liability</h2>
       <p>
-        TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT WILL CODING
-        CAPYBARAS, ITS AFFILIATES, OFFICERS, EMPLOYEES, AGENTS, OR
-        LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+        TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT WILL{" "}
+        {legalEntityNameUpper}, ITS AFFILIATES, OFFICERS, EMPLOYEES, AGENTS,
+        OR LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
         CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING LOST
         PROFITS, LOST DATA, OR BUSINESS INTERRUPTION, ARISING OUT OF OR
         IN CONNECTION WITH THESE TERMS OR YOUR USE OF THE SERVICES,

@@ -142,6 +142,54 @@ export function BrandingForm({
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="legalEntityName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Legal entity name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="[YOUR COMPANY NAME]" {...field} />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      <strong>COPY_TODO:</strong> Used in Terms of Service and
+                      other legal copy. Must match your registered business
+                      name.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="attribution"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label className="flex items-start gap-2 rounded-md border p-3 transition-colors has-[input:checked]:border-primary has-[input:checked]:bg-accent">
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                        className="mt-1 h-3.5 w-3.5 accent-primary"
+                      />
+                      <span className="text-sm">
+                        <span className="font-medium">
+                          Show &ldquo;Built by Coding Capybaras&rdquo; badge in
+                          footer
+                        </span>
+                        <br />
+                        <span className="text-muted-foreground">
+                          Help us by crediting Coding Capybaras in your footer
+                          (opt-in).
+                        </span>
+                      </span>
+                    </Label>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* ── Theme (L2 — Free) ────────────────────────────────── */}
               <div className="border-t pt-5">
                 <h3 className="mb-3 text-sm font-medium">Theme</h3>

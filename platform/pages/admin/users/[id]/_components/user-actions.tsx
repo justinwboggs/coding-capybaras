@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { type Route } from "next";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
@@ -117,7 +118,7 @@ export function UserActions({
       }
       toast.success("User deleted.");
       setDeleteOpen(false);
-      router.push("/admin/users");
+      router.push("/admin/users" as Route);
     });
   }
 

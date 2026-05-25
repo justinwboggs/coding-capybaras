@@ -35,7 +35,7 @@ export default async function AdminAuditLogPage({ searchParams }: PageProps) {
         </p>
         {resource && (
           <Link
-            href="/admin/audit-log"
+            href={"/admin/audit-log" as Route}
             className="text-xs underline underline-offset-2"
           >
             Clear filter ({resource})

@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
@@ -71,7 +72,7 @@ export default async function AdminUserDetailPage({ params }: PageProps) {
     <div className="space-y-6">
       <div className="flex items-baseline gap-3">
         <Link
-          href="/admin/users"
+          href={"/admin/users" as Route}
           className="text-sm text-muted-foreground hover:underline"
         >
           ← Users
@@ -173,7 +174,7 @@ export default async function AdminUserDetailPage({ params }: PageProps) {
           <CardDescription>
             Last 10 audit entries for this user. The full log lives at{" "}
             <Link
-              href="/admin/audit-log"
+              href={"/admin/audit-log" as Route}
               className="underline underline-offset-2"
             >
               /admin/audit-log

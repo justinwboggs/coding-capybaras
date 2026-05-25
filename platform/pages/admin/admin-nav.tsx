@@ -1,15 +1,16 @@
 "use client";
 
+import { type Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/platform/lib/utils";
 
-const TABS = [
-  { href: "/admin", label: "Overview", exact: true },
-  { href: "/admin/users", label: "Users", exact: false },
-  { href: "/admin/audit-log", label: "Audit log", exact: false },
-] as const;
+const TABS: readonly { href: Route; label: string; exact: boolean }[] = [
+  { href: "/admin" as Route, label: "Overview", exact: true },
+  { href: "/admin/users" as Route, label: "Users", exact: false },
+  { href: "/admin/audit-log" as Route, label: "Audit log", exact: false },
+];
 
 export function AdminNav() {
   const pathname = usePathname();

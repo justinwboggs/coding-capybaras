@@ -81,6 +81,35 @@ export default async function AdminOverviewPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Pro-locked: team placeholder */}
+      <Card className={hasPro ? undefined : "opacity-70"}>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-lg">Team</CardTitle>
+            <Badge variant="secondary" className="gap-1 text-[10px]">
+              {hasPro ? "Unlocked" : <Lock className="size-3" />}
+              {hasPro ? null : "Pro"}
+            </Badge>
+          </div>
+          <CardDescription>
+            Invite teammates to share admin access — multiple roles, scoped
+            permissions, and an audit trail.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {hasPro ? (
+            <p className="text-sm text-muted-foreground">
+              Coming soon — the Teams system arrives in a future tranche. The
+              tier gate is live; the implementation is the next piece.
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Set <code>PLATFORM_TIER=pro</code> in your env to unlock.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

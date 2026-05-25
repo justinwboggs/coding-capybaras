@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import Link from "next/link";
 
 import { SupportButton } from "@/platform/components/authed/support-button";
@@ -72,6 +73,14 @@ export default async function AuthedLayout({
                 className="text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 Config
+              </Link>
+            )}
+            {isAdmin(user) && (
+              <Link
+                href={"/admin" as Route}
+                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Admin
               </Link>
             )}
             <Link

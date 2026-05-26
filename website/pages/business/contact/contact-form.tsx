@@ -56,10 +56,11 @@ export function ContactForm() {
   if (submitted) {
     return (
       <div className="space-y-2 rounded-md border border-primary/30 bg-primary/5 p-6 text-sm">
-        <p className="font-semibold">Thanks — we&apos;ll be in touch soon.</p>
+        <p className="font-semibold">Thanks — we&apos;ll be in touch within 1 business day.</p>
         <p className="text-muted-foreground">
-          {/* COPY_TODO: optional follow-up line on the contact confirmation. */}
-          COPY_TODO: optional follow-up line.
+          A copy of your inquiry has been sent to our support inbox. If you
+          don&apos;t hear back within 2 business days, please email us
+          directly.
         </p>
       </div>
     );

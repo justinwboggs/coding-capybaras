@@ -17,35 +17,38 @@ import { getActivePlans, getUserPlan, type PlanKey } from "@/platform/lib/billin
 import { cn } from "@/platform/lib/utils";
 
 export const metadata = {
-  // COPY_TODO: pricing page title + description for SEO/social cards.
+  // Override via /config/pricing once you settle your positioning.
   title: "Pricing",
-  description: "COPY_TODO: short description of your pricing.",
+  description: "Simple, predictable plans. Start free, upgrade when you're ready.",
 };
 
-// COPY_TODO: write your own positioning line for each plan.
+// Neutral defaults — override per tenant via /config/pricing once your
+// positioning is settled. Same pattern as the landing-page tagline.
 const PLAN_TAGLINES: Record<PlanKey, string> = {
-  free: "COPY_TODO: positioning line for the free plan.",
-  pro: "COPY_TODO: positioning line for the pro plan.",
-  business: "COPY_TODO: positioning line for the business plan.",
+  free: "Ship your first SaaS",
+  pro: "Built for growing teams",
+  business: "Scale on your terms",
 };
 
-// COPY_TODO: marketing bullets for each plan. Distinct from platform_plans.features
-// (which drives the canAccess gating list). These are positioning, not feature flags.
+// Marketing bullets. Distinct from platform_plans.features (which drives
+// canAccess gating). These are positioning, not feature flags. Replace
+// with copy that matches what your tenants actually use the boilerplate
+// for.
 const PLAN_BULLETS: Record<PlanKey, string[]> = {
   free: [
-    "COPY_TODO: free bullet one",
-    "COPY_TODO: free bullet two",
-    "COPY_TODO: free bullet three",
+    "Auth, billing, and email wired up",
+    "Configuration UI for branding and copy",
+    "Audit log for every admin action",
   ],
   pro: [
-    "COPY_TODO: pro bullet one",
-    "COPY_TODO: pro bullet two",
-    "COPY_TODO: pro bullet three",
+    "Everything in Free",
+    "Advanced branding (custom fonts, tokens, CSS)",
+    "Priority support",
   ],
   business: [
-    "COPY_TODO: business bullet one",
-    "COPY_TODO: business bullet two",
-    "COPY_TODO: business bullet three",
+    "Everything in Pro",
+    "Custom contract and onboarding",
+    "Dedicated implementation support",
   ],
 };
 
@@ -91,12 +94,11 @@ export default async function PricingPage({
     <section className="container max-w-5xl py-20">
       <div className="mx-auto max-w-2xl space-y-3 text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          {/* COPY_TODO: pricing page headline. */}
-          COPY_TODO: pricing headline
+          Simple pricing. Start free.
         </h1>
         <p className="text-lg text-muted-foreground">
-          {/* COPY_TODO: pricing page subheadline. */}
-          COPY_TODO: short paragraph framing your pricing.
+          Three plans, no hidden fees. Upgrade when you outgrow Free; cancel
+          any time from the customer portal.
         </p>
       </div>
 
@@ -131,8 +133,7 @@ export default async function PricingPage({
               <CardHeader className="space-y-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-xl">{plan.displayName}</CardTitle>
-                  {/* COPY_TODO: badge label on the highlighted plan, if any. */}
-                  {isPro && <Badge>COPY_TODO: badge</Badge>}
+                  {isPro && <Badge>Most popular</Badge>}
                   {isCurrent && !isPro && (
                     <Badge variant="secondary">Current plan</Badge>
                   )}
@@ -183,8 +184,8 @@ export default async function PricingPage({
       </div>
 
       <p className="mt-10 text-center text-sm text-muted-foreground">
-        {/* COPY_TODO: footnote — currency, refund policy, anything else. */}
-        COPY_TODO: pricing footnote.
+        Prices in USD. Subscriptions renew monthly until canceled. Manage or
+        cancel any time from your account billing page.
       </p>
     </section>
   );
@@ -204,11 +205,13 @@ function PriceLine({
         <span className="text-4xl font-bold tracking-tight">{price.amount}</span>
         <span className="text-sm text-muted-foreground">{price.suffix}</span>
       </div>
-      {/* COPY_TODO: optional "was X, now Y" line under the Pro price.
-          Numbers are display-only — the charged amount comes from the DB. */}
+      {/* Optional positioning line under the Pro price — kept rendered
+          for tenants who want a "was X, now Y" or "billed monthly" hint.
+          Edit or delete to taste; numbers are display-only since the
+          charged amount comes from the DB. */}
       {isPro && plan.amountCents > 0 && (
         <p className="text-xs text-muted-foreground">
-          COPY_TODO: optional positioning line under the price
+          Cancel any time. No long-term contract.
         </p>
       )}
     </div>

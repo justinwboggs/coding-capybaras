@@ -11,6 +11,7 @@ import { cache } from "react";
 
 import { db } from "@/platform/db/client";
 import { platformConfig } from "@/platform/db/schema/platform";
+import { getTier, tierMeets } from "@/platform/lib/tier";
 
 // Config keys are namespaced strings. These constants keep call sites
 // typo-free; email-template keys are generated in lib/email/templates.
@@ -70,7 +71,11 @@ export const DEFAULT_BRANDING: Branding = {
   primaryColor: "#18181b",
   logoUrl: "",
   tagline: "",
-  attribution: false,
+  // Default on — Free tenants display the "Built by Coding Capybaras" badge.
+  // The ability to hide it is the Pro upsell (gated in saveBrandingAction
+  // and locked in the branding admin form). Standard pattern: Vercel's
+  // "Made with Vercel", Carrd's footer, etc.
+  attribution: true,
   // COPY_TODO: tenant MUST set this to their registered business name before
   // launch. The deliberately-obvious placeholder makes an unconfigured ToS
   // visible at a glance.
@@ -239,6 +244,12 @@ export async function getBranding(): Promise<Branding> {
     const v = all[key];
     return typeof v === "boolean" ? v : fallback;
   };
+  // Attribution is read-time tier-coerced: Free always sees true regardless
+  // of the persisted value. Closes the downgrade case (tenant was Pro, set
+  // false, downgraded to Free → persisted false would otherwise survive and
+  // hide the badge). The DB row is preserved unmodified, so re-upgrading to
+  // Pro restores the tenant's prior preference automatically.
+  const hasPro = tierMeets(getTier(), "pro");
   return {
     appName: str(CONFIG_KEYS.brandingAppName, DEFAULT_BRANDING.appName),
     primaryColor: str(
@@ -250,10 +261,9 @@ export async function getBranding(): Promise<Branding> {
       CONFIG_KEYS.brandingTagline,
       DEFAULT_BRANDING.tagline,
     ),
-    attribution: bool(
-      CONFIG_KEYS.brandingAttribution,
-      DEFAULT_BRANDING.attribution,
-    ),
+    attribution: hasPro
+      ? bool(CONFIG_KEYS.brandingAttribution, DEFAULT_BRANDING.attribution)
+      : true,
     legalEntityName: str(
       CONFIG_KEYS.brandingLegalEntityName,
       DEFAULT_BRANDING.legalEntityName,
@@ -308,6 +318,11 @@ export async function getBrandingExtended(): Promise<BrandingExtended> {
     const v = all[key];
     return typeof v === "boolean" ? v : fallback;
   };
+  // Attribution is read-time tier-coerced — see getBranding() above for the
+  // rationale. Apply the same rule here so callers like the branding admin
+  // form's initial values render consistently with what the marketing
+  // footer shows.
+  const hasPro = tierMeets(getTier(), "pro");
   return {
     appName: str(CONFIG_KEYS.brandingAppName, DEFAULT_BRANDING.appName),
     primaryColor: str(
@@ -319,10 +334,9 @@ export async function getBrandingExtended(): Promise<BrandingExtended> {
       CONFIG_KEYS.brandingTagline,
       DEFAULT_BRANDING.tagline,
     ),
-    attribution: bool(
-      CONFIG_KEYS.brandingAttribution,
-      DEFAULT_BRANDING.attribution,
-    ),
+    attribution: hasPro
+      ? bool(CONFIG_KEYS.brandingAttribution, DEFAULT_BRANDING.attribution)
+      : true,
     legalEntityName: str(
       CONFIG_KEYS.brandingLegalEntityName,
       DEFAULT_BRANDING.legalEntityName,

@@ -166,22 +166,44 @@ export function BrandingForm({
                 name="attribution"
                 render={({ field }) => (
                   <FormItem>
-                    <Label className="flex items-start gap-2 rounded-md border p-3 transition-colors has-[input:checked]:border-primary has-[input:checked]:bg-accent">
+                    <Label
+                      className={
+                        "flex items-start gap-2 rounded-md border p-3 transition-colors has-[input:checked]:border-primary has-[input:checked]:bg-accent" +
+                        (hasPro ? "" : " cursor-not-allowed opacity-70")
+                      }
+                    >
                       <input
                         type="checkbox"
-                        checked={field.value}
-                        onChange={(e) => field.onChange(e.target.checked)}
-                        className="mt-1 h-3.5 w-3.5 accent-primary"
+                        // Free tenants always see this as checked regardless
+                        // of the underlying form value — the disabled state
+                        // prevents interaction, and the server drops Free
+                        // writes anyway. Pro tenants see the real value.
+                        checked={hasPro ? field.value : true}
+                        onChange={(e) =>
+                          hasPro && field.onChange(e.target.checked)
+                        }
+                        disabled={!hasPro}
+                        className="mt-1 h-3.5 w-3.5 accent-primary disabled:cursor-not-allowed"
                       />
                       <span className="text-sm">
-                        <span className="font-medium">
+                        <span className="flex items-center gap-2 font-medium">
                           Show &ldquo;Built by Coding Capybaras&rdquo; badge in
                           footer
+                          {!hasPro && (
+                            <Badge
+                              variant="secondary"
+                              className="gap-1 text-[10px]"
+                            >
+                              <Lock className="size-3" />
+                              Pro
+                            </Badge>
+                          )}
                         </span>
                         <br />
                         <span className="text-muted-foreground">
-                          Help us by crediting Coding Capybaras in your footer
-                          (opt-in).
+                          {hasPro
+                            ? "Show 'Built by Coding Capybaras' badge in footer."
+                            : "Free tenants display the 'Built by Coding Capybaras' badge. Upgrade to Pro to remove."}
                         </span>
                       </span>
                     </Label>

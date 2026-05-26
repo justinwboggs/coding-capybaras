@@ -80,14 +80,19 @@ export async function saveBrandingAction(
       { key: CONFIG_KEYS.brandingPrimaryColor, value: primaryColor },
       { key: CONFIG_KEYS.brandingLogoUrl, value: logoUrl },
       { key: CONFIG_KEYS.brandingLegalEntityName, value: legalEntityName },
-      { key: CONFIG_KEYS.brandingAttribution, value: attribution },
       // L2 — Free tier, always written.
       { key: CONFIG_KEYS.brandingBackgroundColor, value: backgroundColor },
       { key: CONFIG_KEYS.brandingFontFamily, value: fontFamily },
       { key: CONFIG_KEYS.brandingBorderRadius, value: borderRadius },
     ];
     if (hasPro) {
+      // Attribution toggle is Pro-gated even though it's an L1-shape field:
+      // Free tenants always display the "Built by Coding Capybaras" badge,
+      // and the ability to hide it is the Pro upsell. A tampered Free
+      // submission with attribution=false is silently dropped here — same
+      // defensive backstop pattern as the L3 fields below.
       entries.push(
+        { key: CONFIG_KEYS.brandingAttribution, value: attribution },
         { key: CONFIG_KEYS.brandingForegroundColor, value: foregroundColor },
         { key: CONFIG_KEYS.brandingMutedColor, value: mutedColor },
         { key: CONFIG_KEYS.brandingAccentColor, value: accentColor },
@@ -107,11 +112,11 @@ export async function saveBrandingAction(
       primaryColor,
       logoUrl,
       legalEntityName,
-      attribution,
       backgroundColor,
       fontFamily,
       borderRadius,
       ...(hasPro && {
+        attribution,
         foregroundColor,
         mutedColor,
         accentColor,

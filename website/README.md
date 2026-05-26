@@ -1,5 +1,7 @@
 # `/website/` — Your marketing layer
 
+> **Audience**: tenant maintainers and AI agents working in this region. For initial setup, see [the root README](../README.md) and [`/docs/`](../docs/).
+
 This folder is **yours**. Customize freely — platform updates won't overwrite anything in here.
 
 This is where the public-facing pages of your app live: landing page, pricing, FAQ, about, blog, docs, terms, privacy. Anything a not-yet-signed-up visitor sees. The authenticated app (after sign-in) belongs in `/product/`.

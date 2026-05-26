@@ -1,5 +1,7 @@
 # `/platform/` — Shared infrastructure
 
+> **Audience**: tenant maintainers and AI agents working in this region. For initial setup, see [the root README](../README.md) and [`/docs/`](../docs/).
+
 This folder is the **locked plumbing** of every app built on the boilerplate. It owns the bits no SaaS should have to reinvent: authentication, payments, transactional email, plan-based access control, the guided journey UX, configuration, and the admin surface.
 
 ## What lives here

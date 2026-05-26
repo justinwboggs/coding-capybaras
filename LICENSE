@@ -1,0 +1,59 @@
+COPY_TODO — pick a license before public launch.
+
+This file is a placeholder. The boilerplate ships without a chosen
+license so the tenant can pick terms that match their business model.
+Three common options to consider:
+
+──────────────────────────────────────────────────────────────────────
+Option 1: MIT-with-attribution
+──────────────────────────────────────────────────────────────────────
+Permissive. Anyone can fork, modify, and redistribute, including
+commercially, as long as they include the copyright notice.
+
+  - Pros: maximum adoption, easiest to reason about, well understood.
+  - Cons: someone could clone your work and compete with you. No
+    obligation for forks to contribute back.
+  - When to pick: you're treating the boilerplate as a gift to the
+    community, or distribution itself isn't your moat.
+
+Use the canonical MIT text from https://choosealicense.com/licenses/mit/
+and add your copyright line (e.g. "Copyright (c) 2026 [Your Name]").
+
+──────────────────────────────────────────────────────────────────────
+Option 2: Source-available proprietary
+──────────────────────────────────────────────────────────────────────
+The code is visible (and tenants can read/modify it for their own
+project), but redistribution is prohibited. Common in commercial
+boilerplates that bundle ongoing updates or a community.
+
+  - Pros: prevents direct competition; preserves the paid distribution
+    channel; tenants still get the transparency of readable source.
+  - Cons: incompatible with the open-source ecosystem; requires
+    drafting your own license terms or adapting an existing one (BUSL,
+    Functional Source License, Elastic License v2, etc.).
+  - When to pick: you're selling the boilerplate as a product and
+    distribution IS the moat.
+
+Templates worth reading: https://fsl.software (FSL), https://mariadb.com/bsl11/
+(BUSL), https://www.elastic.co/licensing/elastic-license (ELv2).
+
+──────────────────────────────────────────────────────────────────────
+Option 3: Proprietary EULA
+──────────────────────────────────────────────────────────────────────
+Closed. The tenant gets a per-seat or per-organization license to use
+the code for their own project; no fork/redistribute/sublicense rights.
+Strongest commercial protection; requires writing or buying a real EULA.
+
+  - Pros: strongest IP protection; clear commercial terms.
+  - Cons: legal cost; tenants can't fork even for their own internal
+    fixes; less appealing to developer-tenants.
+  - When to pick: you're selling enterprise licenses with named-user
+    commitments, or your distribution model needs strong DRM-like
+    terms.
+
+──────────────────────────────────────────────────────────────────────
+
+When you've picked, delete this entire file and replace it with the
+chosen license text. Don't ship to production with this placeholder
+file in place — it provides no legal protection for either you or your
+tenants.

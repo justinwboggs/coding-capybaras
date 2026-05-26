@@ -1,5 +1,7 @@
 # `/product/` — Where your app gets built
 
+> **Audience**: tenant maintainers and AI agents working in this region. For initial setup, see [the root README](../README.md) and [`/docs/`](../docs/).
+
 This folder is **yours**. This is where the actual product — the thing your users sign in to use — lives. Build whatever you want. Platform updates won't overwrite anything in here.
 
 ## What lives here

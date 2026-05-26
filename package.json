@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,6 +17,7 @@
     "db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
     "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
+    "db:apply:manual": "dotenv -e .env.local -- tsx scripts/apply-manual-migrations.ts",
     "sync-ai-rules": "tsx scripts/sync-ai-rules.ts",
     "new:route": "tsx scripts/new-route.ts"
   },

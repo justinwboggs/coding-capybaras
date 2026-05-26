@@ -6,6 +6,11 @@ staged setup journey are wired up out of the box. You bring the product.
 
 ## Quickstart
 
+Prerequisites: **Node 20+**, **pnpm 9+** (`npm install -g pnpm`), and
+accounts at [Supabase](https://supabase.com) and (for payments)
+[Stripe](https://stripe.com). Resend and Vercel come in when you want to
+send email and deploy.
+
 ```bash
 pnpm install
 cp .env.example .env.local
@@ -13,9 +18,23 @@ pnpm dev
 ```
 
 Then open `http://localhost:3000`, sign up, and follow the staged journey
-at `/journey`. The journey walks you through creating accounts and pasting
-keys for Supabase, Stripe, Resend, and the rest. Secrets land in
-`.env.local` — never in the database, never in git.
+at [`/journey`](http://localhost:3000/journey). The journey walks you
+through creating accounts and pasting keys for Supabase, Stripe, Resend,
+and the rest. Secrets land in `.env.local` — never in the database,
+never in git.
+
+## Setup docs
+
+Past the local dev loop, three docs cover what the journey doesn't:
+
+- [`docs/STRIPE_SETUP.md`](./docs/STRIPE_SETUP.md) — full Stripe wiring:
+  products, price IDs, webhooks (local CLI + production), test vs live.
+- [`docs/DEPLOY.md`](./docs/DEPLOY.md) — Vercel deploy walkthrough,
+  env-var checklist, custom domain, post-deploy migration apply,
+  production smoke test.
+- [`platform/db/migrations/manual/README.md`](./platform/db/migrations/manual/README.md)
+  — the four RLS / seed-data SQL files and how to apply them
+  (`pnpm db:apply:manual`).
 
 ## Architecture: three regions
 
@@ -81,6 +100,7 @@ pnpm lint             # next lint
 pnpm build            # production build
 pnpm db:generate      # generate Drizzle migrations
 pnpm db:push          # push schema to your Supabase Postgres
+pnpm db:apply:manual  # apply hand-written RLS / seed SQL migrations
 pnpm new:route <path> # add a route (creates shim + page file)
 pnpm sync-ai-rules    # regenerate CLAUDE.md, .cursorrules, etc.
 ```
@@ -91,3 +111,37 @@ pnpm sync-ai-rules    # regenerate CLAUDE.md, .cursorrules, etc.
 work in the right region, don't touch `/platform/`, don't edit `/app/`
 directly, prefix tables `app_` (or `platform_`), and put secrets in
 `.env.local`.
+
+## Support
+
+<!-- COPY_TODO: pick your preferred support channel(s) and replace this
+     paragraph. Options to consider: a GitHub Discussions link on the
+     boilerplate repo, a Discord/Slack invite for paying tenants, an
+     email address (support@…), a help-form URL. The boilerplate has no
+     default — Justin/you decide what to commit to. -->
+
+Support channels haven't been wired up yet. Open an issue against the
+boilerplate repo for now, or check back once this section is filled in.
+
+## License
+
+See [`LICENSE`](./LICENSE) in the repo root. The boilerplate ships with
+a placeholder license file; the tenant (you) picks the actual terms
+before public launch.
+
+## Redistribution
+
+<!-- COPY_TODO: declare what tenants can and can't do with the
+     boilerplate. Common positions:
+     - Resell as-is: usually no (otherwise the boilerplate competes with
+       itself).
+     - Use to build and ship your own SaaS to your own customers: yes
+       (that's the whole point).
+     - Use to build client projects: usually yes, sometimes with
+       per-project licensing.
+     - Open-source a fork: depends on whether you go MIT-with-
+       attribution or proprietary.
+     Pick a position and replace this paragraph. -->
+
+Redistribution terms haven't been finalized. Treat this as private code
+under personal license until this section is filled in.

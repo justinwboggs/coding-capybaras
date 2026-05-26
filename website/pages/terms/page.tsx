@@ -32,7 +32,7 @@ export default async function TermsPage() {
         These Terms of Service (&ldquo;Terms&rdquo;) govern your access to
         and use of [COPY_TODO: site domain] (the &ldquo;Site&rdquo;) and any
         associated services (collectively, the &ldquo;Services&rdquo;)
-        offered by [COPY_TODO: business name] (&ldquo;we,&rdquo;
+        offered by {legalEntityName} (&ldquo;we,&rdquo;
         &ldquo;us,&rdquo; or &ldquo;our&rdquo;).
       </p>
 
@@ -53,7 +53,7 @@ export default async function TermsPage() {
 
       <h2>2. The Services</h2>
       <p>
-        [COPY_TODO: business name] provides [COPY_TODO: one or two
+        {legalEntityName} provides [COPY_TODO: one or two
         sentences describing what your Services do and who they are for].
       </p>
       <p>
@@ -185,14 +185,14 @@ export default async function TermsPage() {
       <h2>8. Intellectual Property</h2>
       <p>
         The Services, including their code, documentation, design, logos,
-        trademarks, and all related materials, are owned by [COPY_TODO:
-        business name] and are protected by intellectual property laws.
+        trademarks, and all related materials, are owned by {legalEntityName}
+        {" "}and are protected by intellectual property laws.
         Except for the limited license granted in Section 4, no rights are
         granted to you by implication, estoppel, or otherwise.
       </p>
       <p>
-        The &ldquo;[COPY_TODO: business name]&rdquo; name and logo are trademarks
-        of [COPY_TODO: business name]. You may not use them without our prior
+        The &ldquo;{legalEntityName}&rdquo; name and logo are trademarks
+        of {legalEntityName}. You may not use them without our prior
         written permission.
       </p>
 
@@ -252,8 +252,8 @@ export default async function TermsPage() {
 
       <h2>12. Indemnification</h2>
       <p>
-        You agree to indemnify, defend, and hold harmless [COPY_TODO: business name]
-        and its officers, directors, employees, and agents from any
+        You agree to indemnify, defend, and hold harmless {legalEntityName}
+        {" "}and its officers, directors, employees, and agents from any
         claims, damages, losses, liabilities, costs, and expenses
         (including reasonable attorneys&apos; fees) arising out of or
         related to your use of the Services, your violation of these
@@ -305,7 +305,7 @@ export default async function TermsPage() {
       <p>
         <strong>Entire Agreement</strong> — These Terms, together with our
         Privacy Policy, constitute the entire agreement between you and
-        [COPY_TODO: business name] regarding the Services.
+        {" "}{legalEntityName} regarding the Services.
       </p>
       <p>
         <strong>Severability</strong> — If any provision of these Terms is

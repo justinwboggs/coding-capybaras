@@ -9,6 +9,17 @@ alwaysApply: true
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 ## Global rules (apply everywhere)
 
+> **For tenants and AI agents reading this**: these rules describe the
+> Coding Capybaras boilerplate's architecture and tell AI assistants how
+> to work in it safely. They apply equally whether you're a tenant
+> customizing your downloaded copy or a contributor to the upstream
+> boilerplate itself. The most important rule below is the region split
+> (`/platform/` vs `/website/` vs `/product/`) — getting that right
+> keeps upstream pulls clean and prevents you from accidentally
+> rewriting something the boilerplate will overwrite on the next
+> update. New here? Start with [the root README](./README.md) for setup,
+> then read on for the conventions your AI tooling should follow.
+
 This repo has **three regions**. Determine which region a change belongs in
 before editing.
 

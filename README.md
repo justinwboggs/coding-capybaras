@@ -125,23 +125,20 @@ boilerplate repo for now, or check back once this section is filled in.
 
 ## License
 
-See [`LICENSE`](./LICENSE) in the repo root. The boilerplate ships with
-a placeholder license file; the tenant (you) picks the actual terms
-before public launch.
+See [LICENSE](./LICENSE) for the full Software License Agreement.
 
 ## Redistribution
 
-<!-- COPY_TODO: declare what tenants can and can't do with the
-     boilerplate. Common positions:
-     - Resell as-is: usually no (otherwise the boilerplate competes with
-       itself).
-     - Use to build and ship your own SaaS to your own customers: yes
-       (that's the whole point).
-     - Use to build client projects: usually yes, sometimes with
-       per-project licensing.
-     - Open-source a fork: depends on whether you go MIT-with-
-       attribution or proprietary.
-     Pick a position and replace this paragraph. -->
+The Coding Capybaras Boilerplate is licensed under a source-available proprietary license (see [LICENSE](./LICENSE)). In summary:
 
-Redistribution terms haven't been finalized. Treat this as private code
-under personal license until this section is filled in.
+**You may:**
+- Build Applications (commercial or personal) using the Software as a foundation
+- Modify and customize the Software for your own use
+- Distribute, sell, or commercially deploy Applications you build, provided they represent genuine new development
+
+**You may NOT:**
+- Resell, sublicense, or redistribute the Software itself as a standalone product, template, or starter kit
+- Sell Applications that are substantially identical to the Software with only cosmetic changes
+- Remove copyright or proprietary notices
+
+See [LICENSE](./LICENSE) for the full terms.

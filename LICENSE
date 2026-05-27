@@ -1,59 +1,74 @@
-COPY_TODO — pick a license before public launch.
+# Coding Capybaras Software License Agreement
 
-This file is a placeholder. The boilerplate ships without a chosen
-license so the tenant can pick terms that match their business model.
-Three common options to consider:
+**Effective Date:** May 25, 2026
+**Licensor:** Boggs Holdings LLC d/b/a Coding Capybaras
 
-──────────────────────────────────────────────────────────────────────
-Option 1: MIT-with-attribution
-──────────────────────────────────────────────────────────────────────
-Permissive. Anyone can fork, modify, and redistribute, including
-commercially, as long as they include the copyright notice.
+This Software License Agreement ("License") is a legal agreement between you ("Licensee" or "You") and Boggs Holdings LLC d/b/a Coding Capybaras ("Licensor"), governing your use of the Coding Capybaras Boilerplate ("Software").
 
-  - Pros: maximum adoption, easiest to reason about, well understood.
-  - Cons: someone could clone your work and compete with you. No
-    obligation for forks to contribute back.
-  - When to pick: you're treating the boilerplate as a gift to the
-    community, or distribution itself isn't your moat.
+By downloading, installing, accessing, or using the Software, you agree to be bound by this License. If you do not agree, do not download, install, access, or use the Software.
 
-Use the canonical MIT text from https://choosealicense.com/licenses/mit/
-and add your copyright line (e.g. "Copyright (c) 2026 [Your Name]").
+## 1. Definitions
 
-──────────────────────────────────────────────────────────────────────
-Option 2: Source-available proprietary
-──────────────────────────────────────────────────────────────────────
-The code is visible (and tenants can read/modify it for their own
-project), but redistribution is prohibited. Common in commercial
-boilerplates that bundle ongoing updates or a community.
+- **"Software"** means the Coding Capybaras Boilerplate source code, documentation, and any updates or modifications provided by Licensor.
+- **"Application"** means a software application that you build using the Software as a starting point or foundation, where the Software is substantially modified, customized, or integrated with your own code, content, and business logic.
+- **"Service"** has the meaning given in the Coding Capybaras Terms of Service at codingcapybaras.com/terms.
 
-  - Pros: prevents direct competition; preserves the paid distribution
-    channel; tenants still get the transparency of readable source.
-  - Cons: incompatible with the open-source ecosystem; requires
-    drafting your own license terms or adapting an existing one (BUSL,
-    Functional Source License, Elastic License v2, etc.).
-  - When to pick: you're selling the boilerplate as a product and
-    distribution IS the moat.
+## 2. Grant of License
 
-Templates worth reading: https://fsl.software (FSL), https://mariadb.com/bsl11/
-(BUSL), https://www.elastic.co/licensing/elastic-license (ELv2).
+Subject to your compliance with this License, Licensor grants you a non-exclusive, non-transferable, non-sublicensable, perpetual license to:
 
-──────────────────────────────────────────────────────────────────────
-Option 3: Proprietary EULA
-──────────────────────────────────────────────────────────────────────
-Closed. The tenant gets a per-seat or per-organization license to use
-the code for their own project; no fork/redistribute/sublicense rights.
-Strongest commercial protection; requires writing or buying a real EULA.
+- Download and store the Software on devices you own or control
+- Modify and customize the Software for your own use
+- Use the Software as a foundation to build Applications
+- Distribute, sell, or commercially deploy Applications you build using the Software, provided the Application represents genuine new development that substantially modifies, extends, or differs from the Software in user-facing functionality, content, and business purpose
 
-  - Pros: strongest IP protection; clear commercial terms.
-  - Cons: legal cost; tenants can't fork even for their own internal
-    fixes; less appealing to developer-tenants.
-  - When to pick: you're selling enterprise licenses with named-user
-    commitments, or your distribution model needs strong DRM-like
-    terms.
+## 3. Restrictions
 
-──────────────────────────────────────────────────────────────────────
+You may NOT:
 
-When you've picked, delete this entire file and replace it with the
-chosen license text. Don't ship to production with this placeholder
-file in place — it provides no legal protection for either you or your
-tenants.
+- **Resell, sublicense, or redistribute the Software, in whole or in substantial part, as a standalone product, template, starter kit, boilerplate, framework, or competing offering**
+- **Sell, license, or distribute Applications that are substantially identical to the Software with only cosmetic changes** (renaming, rebranding, minor styling changes, or other superficial modifications) — Applications must represent genuine new development, not the Software relabeled
+- Remove or modify any copyright, trademark, or proprietary notices contained in the Software
+- Use the Software in any way that violates applicable law or the Coding Capybaras Terms of Service
+- Use Licensor's trademarks (including "Coding Capybaras" and any associated logos) without prior written consent, except as required to attribute the Software in good faith
+
+## 4. Ownership
+
+The Software is licensed, not sold. Licensor retains all right, title, and interest in and to the Software, including all intellectual property rights. No rights in the Software are granted to you except as expressly set forth in this License.
+
+Applications you build using the Software remain your property, subject to your compliance with this License.
+
+## 5. Updates
+
+Licensor may release updates, patches, or new versions of the Software from time to time. Access to ongoing updates may be limited to certain Service tiers (e.g., Pro Subscribers), as described in the Coding Capybaras Terms of Service. Updates, when accessed, are governed by this License unless accompanied by a different license agreement.
+
+## 6. Termination
+
+This License terminates automatically if you violate any of its terms. Upon termination, you must immediately stop using the Software and delete all copies in your possession or control.
+
+Applications you built using the Software prior to termination may continue to be used, distributed, and sold by you, provided they substantially modify the Software as described in Section 2 and you do not access updates or new versions of the Software after termination.
+
+## 7. No Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. LICENSOR DOES NOT WARRANT THAT THE SOFTWARE WILL MEET YOUR REQUIREMENTS, BE ERROR-FREE, OR OPERATE WITHOUT INTERRUPTION.
+
+## 8. Limitation of Liability
+
+IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, REVENUE, DATA, OR BUSINESS OPPORTUNITIES, ARISING OUT OF OR RELATING TO THE SOFTWARE OR THIS LICENSE, EVEN IF LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+LICENSOR'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATING TO THIS LICENSE SHALL NOT EXCEED THE GREATER OF THE AMOUNT YOU PAID FOR THE SOFTWARE IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO LIABILITY OR ONE HUNDRED U.S. DOLLARS ($100).
+
+## 9. Governing Law
+
+This License is governed by the laws of the State of California, United States, without regard to its conflict of laws principles. Any disputes arising out of or relating to this License will be resolved as described in the Coding Capybaras Terms of Service.
+
+## 10. Entire Agreement
+
+This License, together with the Coding Capybaras Terms of Service and Privacy Policy, constitutes the entire agreement between you and Licensor regarding the Software. If any provision is held invalid or unenforceable, the remaining provisions will continue in full force and effect.
+
+## Contact
+
+Boggs Holdings LLC
+support@codingcapybaras.com
+4411 Putting Green Drive
+Corona, CA 92883

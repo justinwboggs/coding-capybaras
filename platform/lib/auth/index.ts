@@ -47,6 +47,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     // missing. Insert idempotently and re-select.
     if (!user.email) return null; // can't create a row without an email
 
+    // is_admin is intentionally omitted — first-user promotion lives at the
+    // DB layer in the platform_users BEFORE INSERT trigger (migration 0005),
+    // so this self-heal path and the auth.users trigger stay consistent.
     await db
       .insert(platformUsers)
       .values({ id: user.id, email: user.email })

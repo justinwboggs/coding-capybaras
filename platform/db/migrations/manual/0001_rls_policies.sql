@@ -86,8 +86,13 @@ create policy "platform_config_public_read"
 
 -- ─────────────────────────────────────────────────────────────────
 -- 10. Trigger: when a new auth.users row is created, mirror it into
---     platform_users. Email comes from the auth row. is_admin defaults
---     to false; promote via direct DB update or admin-panel action.
+--     platform_users. Email comes from the auth row. is_admin is left
+--     at the column default (false) here; the first signup on a fresh
+--     deploy is auto-promoted to admin by the BEFORE INSERT trigger
+--     added in 0005_first_user_admin.sql (which fires on every insert
+--     path into platform_users, including this one and the app-layer
+--     self-heal in getCurrentUser). Additional admins are granted by
+--     direct DB update — see docs/DEPLOY.md ("Admin access").
 -- ─────────────────────────────────────────────────────────────────
 create or replace function public.handle_new_auth_user()
 returns trigger

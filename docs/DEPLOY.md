@@ -181,6 +181,36 @@ URL — Stripe ties the signing secret to the endpoint URL.
 8. Update your Stripe webhook endpoint URL (Step 6) to point at the new
    domain. Copy the new signing secret if Stripe regenerates one.
 
+## Admin access
+
+The boilerplate uses a **first-user-wins** rule for admin bootstrap: the
+very first account to sign up on your fresh deployment is automatically
+promoted to admin. The admin is the only account that can reach
+`/config` (branding, pricing, email templates) and `/admin` (user
+overrides, audit log).
+
+**Important:** sign up with your own account **before** sharing your
+site publicly, so you're the first user. If someone else signs up first
+on a brand-new deploy, they become the admin — recover by following the
+manual promotion path below.
+
+### Granting admin manually (recovery + additional admins)
+
+If you ever need to grant admin manually — you shared the URL before
+signing up, you're promoting a teammate, or you're seeding a second
+admin — open the Supabase SQL editor and run:
+
+```sql
+update platform_users set is_admin = true where email = 'you@example.com';
+```
+
+The change takes effect on the user's next request — no redeploy
+needed.
+
+> An in-product flow for inviting and promoting additional admins is
+> planned future work (part of the Teams feature). Until then, manual
+> SQL is the interim path for second-and-beyond admins.
+
 ## Step 8 — Production smoke test
 
 Walk through every critical path against production:

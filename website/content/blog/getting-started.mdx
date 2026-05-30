@@ -1,0 +1,54 @@
+---
+title: "Welcome to your blog (this post is a template)"
+description: "A starter post showing the frontmatter fields and MDX body conventions. Edit, replace, or delete it."
+date: "2026-05-30"
+author: "Your Name"
+tags: ["announcement"]
+published: true
+---
+
+This post is a **template**. Edit it, replace it, or delete it — it exists
+only to show you how the blog works.
+
+## How posts work
+
+Every post is a single `.mdx` file in `website/content/blog/`. The
+**filename becomes the URL slug**: this file is `getting-started.mdx`, so it
+lives at `/blog/getting-started`. Each file starts with a frontmatter block
+(between the `---` fences) that drives the page title, SEO metadata, and
+structured data.
+
+## Frontmatter fields
+
+- `title` — required. Becomes the page `<h1>` and the SEO title.
+- `description` — required. Used for the meta description, Open Graph, and
+  Twitter cards.
+- `date` — required, formatted `YYYY-MM-DD`. Controls ordering (newest first).
+- `author` — optional. Shown on the post and used in structured data.
+- `tags` — optional list of strings.
+- `updated` — optional `YYYY-MM-DD`. Shown as a "last updated" date and used
+  for `dateModified`.
+- `published` — optional, defaults to `true`. Set it to `false` to keep a
+  draft out of the index, sitemap, and live site.
+
+## Writing the body
+
+Write in standard Markdown. Use `##` and `###` for section headings — the
+`<h1>` is generated from your `title`, so don't add another one in the body.
+
+You get **bold**, _italics_, [links](https://example.com), and `inline code`
+for free. Lists work too:
+
+1. First step
+2. Second step
+3. Third step
+
+And fenced code blocks render with the site's styling:
+
+```ts
+export function hello(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+
+When you're ready, replace this file with your first real post.

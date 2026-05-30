@@ -1,3 +1,4 @@
+import { type Route } from "next";
 import Link from "next/link";
 
 import { Mascot } from "@/platform/components/branding/mascot";
@@ -26,6 +27,9 @@ export default async function MarketingLayout({
           </Link>
           <nav className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm">
+              <Link href={"/blog" as Route}>Blog</Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
               <Link href="/pricing">Pricing</Link>
             </Button>
             <Button asChild variant="ghost" size="sm">
@@ -44,6 +48,9 @@ export default async function MarketingLayout({
           <nav className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <Link href="/pricing" className="hover:text-foreground">
               Pricing
+            </Link>
+            <Link href={"/blog" as Route} className="hover:text-foreground">
+              Blog
             </Link>
             <Link href="/business/contact" className="hover:text-foreground">
               Contact

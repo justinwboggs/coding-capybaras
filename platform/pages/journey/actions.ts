@@ -38,6 +38,8 @@ import {
   paymentsStageSchema,
   projectStageRequiredSchema,
   projectStageSchema,
+  takeTheReinsStageRequiredSchema,
+  takeTheReinsStageSchema,
 } from "@/platform/lib/validation/journey";
 
 type ActionResult = { ok: true } | { error: string };
@@ -68,6 +70,10 @@ const STAGE_SCHEMAS = {
     strict: launchPrepStageRequiredSchema,
   },
   deploy: { lax: deployStageSchema, strict: deployStageRequiredSchema },
+  "take-the-reins": {
+    lax: takeTheReinsStageSchema,
+    strict: takeTheReinsStageRequiredSchema,
+  },
 } as const;
 
 function isStageKey(s: string): s is StageKey {

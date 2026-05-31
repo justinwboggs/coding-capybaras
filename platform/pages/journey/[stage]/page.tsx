@@ -2,6 +2,7 @@ import { type Route } from "next";
 import { redirect } from "next/navigation";
 
 import { requireAuth } from "@/platform/lib/auth";
+import { canAccess, getPlanByKey } from "@/platform/lib/billing";
 import { getAllConfig, getBranding } from "@/platform/lib/config";
 import { getOrCreateJourney } from "@/platform/lib/journey/queries";
 import {
@@ -19,6 +20,7 @@ import { FoundationForm } from "../_components/foundation-form";
 import { LaunchPrepForm } from "../_components/launch-prep-form";
 import { PaymentsForm } from "../_components/payments-form";
 import { ProjectForm } from "../_components/project-form";
+import { TakeTheReinsForm } from "../_components/take-the-reins-form";
 
 function isStageKey(s: string): s is StageKey {
   return (STAGE_KEYS as readonly string[]).includes(s);
@@ -94,5 +96,31 @@ export default async function JourneyStagePage({ params }: PageProps) {
       );
     case "deploy":
       return <DeployForm initial={(data.deploy ?? {}) as never} />;
+    case "take-the-reins": {
+      // Tier-aware marketplace copy. The Pro price comes from the billing
+      // source of truth (platform_plans, via getPlanByKey) so it tracks
+      // /pricing and /config/pricing automatically. Falls back to the $97
+      // founding price if the plans table isn't seeded yet (fresh install).
+      // MAINTENANCE: keep this fallback in sync with the founding Pro price.
+      const [hasMarketplaceAccess, proPlan] = await Promise.all([
+        canAccess(user.id, "integrations.access"),
+        getPlanByKey("pro"),
+      ]);
+      const proPriceLabel =
+        proPlan && proPlan.amountCents > 0
+          ? new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: proPlan.currency,
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            }).format(proPlan.amountCents / 100)
+          : "$97";
+      return (
+        <TakeTheReinsForm
+          hasMarketplaceAccess={hasMarketplaceAccess}
+          proPriceLabel={proPriceLabel}
+        />
+      );
+    }
   }
 }

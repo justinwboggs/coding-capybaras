@@ -167,3 +167,11 @@ export const deployStageRequiredSchema = deployStageSchema.extend({
     .max(500),
 });
 export type DeployStageInput = z.infer<typeof deployStageSchema>;
+
+// ── take-the-reins ───────────────────────────────────────────────
+// Informational terminal stage — a send-off with no inputs to collect. Both
+// the lax and strict schemas are empty objects so the "continue" intent
+// always validates, marking the whole journey complete.
+export const takeTheReinsStageSchema = z.object({});
+export const takeTheReinsStageRequiredSchema = z.object({});
+export type TakeTheReinsStageInput = z.infer<typeof takeTheReinsStageSchema>;

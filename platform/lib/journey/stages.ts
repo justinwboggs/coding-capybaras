@@ -18,7 +18,8 @@ export type StageKey =
   | "email"
   | "branding"
   | "launch-prep"
-  | "deploy";
+  | "deploy"
+  | "take-the-reins";
 
 export interface StageDef {
   key: StageKey;
@@ -70,6 +71,13 @@ export const STAGES: readonly StageDef[] = [
     title: "Deploy",
     description: "Push it live and tell the world.",
     estimatedMinutes: 15,
+  },
+  {
+    key: "take-the-reins",
+    title: "Now take the reins",
+    description:
+      "Your app is yours now — how to change it safely, and your AI's first instructions.",
+    estimatedMinutes: 5,
   },
 ] as const;
 
@@ -139,6 +147,11 @@ export function isStageComplete(stage: StageKey, data: StageData): boolean {
       );
     case "deploy":
       return nonEmptyString(data.deploymentUrl);
+    // Informational terminal stage — nothing to collect, so it's complete the
+    // moment it's reached. Finishing it (the "continue" intent) is what sets
+    // the journey's completed_at; this flag only drives the sidebar checkmark.
+    case "take-the-reins":
+      return true;
   }
 }
 
@@ -152,6 +165,7 @@ export interface JourneyData {
   branding?: Record<string, unknown>;
   "launch-prep"?: Record<string, unknown>;
   deploy?: Record<string, unknown>;
+  "take-the-reins"?: Record<string, unknown>;
 }
 
 /**

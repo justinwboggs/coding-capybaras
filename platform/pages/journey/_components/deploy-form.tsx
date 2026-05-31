@@ -194,7 +194,7 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
               onSaveOnly={onSaveOnly}
               saving={saving}
               submitting={form.formState.isSubmitting}
-              continueLabel="Finish journey"
+              continueLabel="Continue to last step"
             />
           </form>
         </Form>

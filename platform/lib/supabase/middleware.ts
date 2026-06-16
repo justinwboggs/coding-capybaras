@@ -10,17 +10,24 @@ const SETUP_PATH = "/setup.html";
 // see a fresh auth state. Called from the root middleware.ts.
 export async function updateSession(request: NextRequest) {
   // ── Un-configured guard ──────────────────────────────────────────
-  // A brand-new clone with an empty .env.local has no Supabase env. The
-  // SSR client below throws "supabaseUrl is required" when given an empty
-  // URL, which would 500 every route. Short-circuit BEFORE constructing
-  // the client and send the visitor to the static setup page instead, so
-  // an early `pnpm dev` shows a friendly explainer rather than a stack
-  // trace. When the env IS present, this block is skipped and behavior is
-  // exactly as before.
-  const supabaseConfigured =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // A brand-new clone with an empty .env.local is missing the boot-critical
+  // env vars. Two ways that 500s every route:
+  //   • the SSR client below throws "supabaseUrl is required" on an empty URL;
+  //   • platform/db/client.ts (server-only, pulled in via the root layout)
+  //     throws "DATABASE_URL is not set" at module load.
+  // So the guard requires ALL of them — both Supabase SSR keys, the
+  // service-role key (admin actions / DB writes), and DATABASE_URL (Drizzle).
+  // If ANY is missing/empty, short-circuit BEFORE constructing the client and
+  // send the visitor to the static setup page instead, so an early `pnpm dev`
+  // shows a friendly explainer rather than a stack trace. When every var is
+  // present, this block is skipped and behavior is exactly as before.
+  const appConfigured =
+    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    !!process.env.SUPABASE_SERVICE_ROLE_KEY &&
+    !!process.env.DATABASE_URL;
 
-  if (!supabaseConfigured) {
+  if (!appConfigured) {
     // Don't rewrite the setup page itself (avoids a rewrite loop). Static
     // assets are already excluded by the matcher in the root middleware.ts.
     if (request.nextUrl.pathname === SETUP_PATH) {

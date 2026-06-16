@@ -39,8 +39,8 @@ export const STAGES: readonly StageDef[] = [
   {
     key: "foundation",
     title: "Foundation",
-    description: "Connect Supabase — your database and auth backend.",
-    estimatedMinutes: 10,
+    description: "Confirm your Supabase connection — your database and auth backend.",
+    estimatedMinutes: 2,
   },
   {
     key: "payments",

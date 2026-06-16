@@ -59,17 +59,14 @@ export default async function JourneyStagePage({ params }: PageProps) {
 
   switch (stage) {
     case "project":
-      return (
-        <ProjectForm initial={(data.project ?? {}) as never} />
-      );
+      return <ProjectForm initial={(data.project ?? {}) as never} />;
     case "foundation":
-      return (
-        <FoundationForm initial={(data.foundation ?? {}) as never} />
-      );
+      // Foundation is a confirmation step — Supabase is necessarily already
+      // connected by the time this renders (auth + DB both ran to get here).
+      // Pass the signed-in email as concrete proof; no journey.data needed.
+      return <FoundationForm userEmail={user.email} />;
     case "payments":
-      return (
-        <PaymentsForm initial={(data.payments ?? {}) as never} />
-      );
+      return <PaymentsForm initial={(data.payments ?? {}) as never} />;
     case "email":
       return <EmailForm initial={(data.email ?? {}) as never} />;
     case "branding": {
@@ -91,9 +88,7 @@ export default async function JourneyStagePage({ params }: PageProps) {
       );
     }
     case "launch-prep":
-      return (
-        <LaunchPrepForm initial={(data["launch-prep"] ?? {}) as never} />
-      );
+      return <LaunchPrepForm initial={(data["launch-prep"] ?? {}) as never} />;
     case "deploy":
       return <DeployForm initial={(data.deploy ?? {}) as never} />;
     case "take-the-reins": {

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Finish your setup · Coding Capybaras</title>
+    <!--
+      Static setup page served by the root middleware when the Supabase
+      environment variables are missing or empty. It is intentionally a
+      plain HTML file in /public — it does NOT go through the Next.js root
+      layout and does NOT import or call any Supabase client, so it renders
+      even with a blank .env.local. All styling is inlined; no external
+      assets are requested.
+    -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f8f8f7;
+        --card: #ffffff;
+        --fg: #18181b;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --accent: #b45309;
+        --accent-soft: #fef3c7;
+        --code-bg: #f4f4f5;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0c0c0d;
+          --card: #161618;
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --accent: #fbbf24;
+          --accent-soft: #2a2310;
+          --code-bg: #1f1f22;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 48px 20px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        max-width: 640px;
+        width: 100%;
+        padding: 40px;
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.04),
+          0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+      .badge {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 4px 12px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 28px;
+        line-height: 1.25;
+        margin: 0 0 12px;
+        letter-spacing: -0.01em;
+      }
+      p {
+        margin: 0 0 16px;
+        color: var(--fg);
+      }
+      p.lead {
+        color: var(--muted);
+        font-size: 16px;
+      }
+      ol {
+        margin: 24px 0 8px;
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+      }
+      ol > li {
+        position: relative;
+        padding: 0 0 20px 44px;
+        counter-increment: step;
+      }
+      ol > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      li strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+      li span {
+        color: var(--muted);
+        font-size: 15px;
+      }
+      code,
+      pre {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 13.5px;
+      }
+      code {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+        white-space: nowrap;
+      }
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        margin: 10px 0 0;
+        line-height: 1.7;
+      }
+      pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        white-space: pre;
+      }
+      .vars {
+        margin-top: 10px;
+      }
+      .vars code {
+        display: inline-block;
+        margin: 2px 4px 2px 0;
+      }
+      a {
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .footnote {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        font-size: 14px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <span class="badge">Setup required</span>
+      <h1>Finish your setup</h1>
+      <p class="lead">
+        Your app can&rsquo;t start yet because it isn&rsquo;t connected to Supabase. Supabase powers
+        sign-in and the database, so it has to be wired up before any page can load. This takes a
+        couple of minutes.
+      </p>
+
+      <ol>
+        <li>
+          <strong>Create a Supabase project</strong>
+          <span>
+            Go to
+            <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer"
+              >supabase.com/dashboard</a
+            >
+            and create a new project (the free tier is fine). Note the database password you choose
+            &mdash; you&rsquo;ll need it below.
+          </span>
+        </li>
+        <li>
+          <strong>Add the four Supabase variables to <code>.env.local</code></strong>
+          <span class="vars">
+            <code>NEXT_PUBLIC_SUPABASE_URL</code>
+            <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
+            <code>SUPABASE_SERVICE_ROLE_KEY</code>
+            <code>DATABASE_URL</code>
+          </span>
+          <span>
+            Find these in your Supabase dashboard. The project URL is on the project home header (or
+            the top <em>Connect</em> button); the anon and service_role keys are under
+            <em>Settings &rarr; API Keys &rarr; &ldquo;Legacy anon, service_role API keys&rdquo;</em
+            >; and the <code>DATABASE_URL</code> is under
+            <em>Connect &rarr; Direct &rarr; Transaction pooler &rarr; URI</em>
+            (port 6543) &mdash; replace <code>[YOUR-PASSWORD]</code> with your DB password. Full
+            paths are in the README Quickstart.
+          </span>
+        </li>
+        <li>
+          <strong>Restart the dev server</strong>
+          <span>Stop and start it again so the new values load:</span>
+          <pre><code>pnpm dev</code></pre>
+        </li>
+      </ol>
+
+      <div class="footnote">
+        Once Supabase is connected, this page disappears and the app loads normally. You can then
+        sign up &mdash; the first account becomes the admin &mdash; and the in-app journey at
+        <code>/journey</code> walks you through Stripe, Resend, branding, and deploy. Secrets stay
+        in <code>.env.local</code> (gitignored) &mdash; never paste them into a web form.
+      </div>
+    </main>
+  </body>
+</html>

@@ -14,14 +14,40 @@ send email and deploy.
 ```bash
 pnpm install
 cp .env.example .env.local
+```
+
+**Now set up Supabase before starting the dev server.** Supabase powers
+sign-in and the database, so the app can't boot until these four vars are
+filled in. (Start `pnpm dev` against an empty `.env.local` and every route
+shows a "Finish your setup" page instead of crashing — that page links back
+here.)
+
+1. Create a project at
+   [supabase.com/dashboard](https://supabase.com/dashboard) (the free tier
+   is fine). Pick a database password and keep it handy.
+2. Fill these four vars in `.env.local` from the Supabase dashboard (paths
+   below reflect the recently redesigned dashboard):
+
+   | Variable                        | Where to find it                                                                                                                                   |
+   | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `NEXT_PUBLIC_SUPABASE_URL`      | The top **Connect** button, or the project home header.                                                                                            |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **Settings → API Keys → "Legacy anon, service_role API keys"** tab (the default tab shows the newer publishable/secret keys). Copy the `anon` key. |
+   | `SUPABASE_SERVICE_ROLE_KEY`     | Same **"Legacy anon, service_role API keys"** tab. Copy the `service_role` key. Keep it secret — it bypasses RLS.                                  |
+   | `DATABASE_URL`                  | **Connect → "Direct" card → "Transaction pooler" → Type: URI** (port 6543). Replace `[YOUR-PASSWORD]` with your database password.                 |
+
+Then start the dev server:
+
+```bash
 pnpm dev
 ```
 
-Then open `http://localhost:3000`, sign up, and follow the staged journey
-at [`/journey`](http://localhost:3000/journey). The journey walks you
-through creating accounts and pasting keys for Supabase, Stripe, Resend,
-and the rest. Secrets land in `.env.local` — never in the database,
-never in git.
+Open `http://localhost:3000` and **sign up** (the first account becomes the
+admin) — sign-up requires the Supabase vars above to be set. From there,
+follow the staged journey at
+[`/journey`](http://localhost:3000/journey), which handles Stripe, Resend,
+branding, and deploy. The journey walks you through creating those accounts
+and pasting their keys. Secrets land in `.env.local` — never in the
+database, never in git.
 
 ## Setup docs
 
@@ -38,11 +64,11 @@ Past the local dev loop, three docs cover what the journey doesn't:
 
 ## Architecture: three regions
 
-| Region        | What's in it                                                     | Modify?            |
-| ------------- | ---------------------------------------------------------------- | ------------------ |
-| `/platform/`  | Auth, billing, email, payments, journey, config, admin           | No (upstream)      |
-| `/website/`   | Marketing surface — landing, pricing, legal, contact             | Freely             |
-| `/product/`   | Authenticated app — everything behind sign-in that isn't billing | Freely             |
+| Region       | What's in it                                                     | Modify?       |
+| ------------ | ---------------------------------------------------------------- | ------------- |
+| `/platform/` | Auth, billing, email, payments, journey, config, admin           | No (upstream) |
+| `/website/`  | Marketing surface — landing, pricing, legal, contact             | Freely        |
+| `/product/`  | Authenticated app — everything behind sign-in that isn't billing | Freely        |
 
 `/app/` at the root is a thin routing manifest. Don't edit it directly —
 use `pnpm new:route <path>` to add a new route.
@@ -73,15 +99,15 @@ upstream pulls stay clean.
 
 ## Where to start customizing
 
-| You want to change…                  | Edit…                                                     |
-| ------------------------------------ | --------------------------------------------------------- |
-| The mascot / brand SVG               | `platform/components/branding/mascot.tsx`                 |
-| The default app name (pre-config)    | `platform/lib/config/index.ts` (`DEFAULT_BRANDING.appName`) |
-| Landing page copy                    | `website/pages/page.tsx`                                  |
-| Pricing copy                         | `website/pages/pricing/page.tsx`                          |
-| Live branding (logo, primary color)  | Visit `/config/branding` as an admin user                 |
-| Live pricing (plan amounts, copy)    | Visit `/config/pricing` as an admin user                  |
-| Email templates                      | Visit `/config/email-templates` as an admin user          |
+| You want to change…                 | Edit…                                                       |
+| ----------------------------------- | ----------------------------------------------------------- |
+| The mascot / brand SVG              | `platform/components/branding/mascot.tsx`                   |
+| The default app name (pre-config)   | `platform/lib/config/index.ts` (`DEFAULT_BRANDING.appName`) |
+| Landing page copy                   | `website/pages/page.tsx`                                    |
+| Pricing copy                        | `website/pages/pricing/page.tsx`                            |
+| Live branding (logo, primary color) | Visit `/config/branding` as an admin user                   |
+| Live pricing (plan amounts, copy)   | Visit `/config/pricing` as an admin user                    |
+| Email templates                     | Visit `/config/email-templates` as an admin user            |
 
 The `/config/*` surfaces write to `platform_config` — runtime config that
 flows through to the live site without a redeploy.
@@ -132,11 +158,13 @@ See [LICENSE](./LICENSE) for the full Software License Agreement.
 The Coding Capybaras Boilerplate is licensed under a source-available proprietary license (see [LICENSE](./LICENSE)). In summary:
 
 **You may:**
+
 - Build Applications (commercial or personal) using the Software as a foundation
 - Modify and customize the Software for your own use
 - Distribute, sell, or commercially deploy Applications you build, provided they represent genuine new development
 
 **You may NOT:**
+
 - Resell, sublicense, or redistribute the Software itself as a standalone product, template, or starter kit
 - Sell Applications that are substantially identical to the Software with only cosmetic changes
 - Remove copyright or proprietary notices

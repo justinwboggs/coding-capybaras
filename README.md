@@ -6,10 +6,18 @@ staged setup journey are wired up out of the box. You bring the product.
 
 ## Quickstart
 
-Prerequisites: **Node 20+**, **pnpm 9+** (`npm install -g pnpm`), and
-accounts at [Supabase](https://supabase.com) and (for payments)
+Prerequisites: **Node 20+**, **pnpm 9+** (`npm install -g pnpm`), a
+[GitHub](https://github.com) account, and accounts at
+[Supabase](https://supabase.com) and (for payments)
 [Stripe](https://stripe.com). Resend and Vercel come in when you want to
 send email and deploy.
+
+Set up GitHub first and use **"Sign in with GitHub"** when you create your
+Supabase, Vercel, and Resend accounts — one identity links the tools, it's
+what Vercel uses to pull your repo when you deploy, and it's where you'll
+pull upstream updates from. Sign into **Stripe** with its own email + 2FA,
+though — it's your payment account, and its access should stay independent
+of GitHub.
 
 ```bash
 pnpm install

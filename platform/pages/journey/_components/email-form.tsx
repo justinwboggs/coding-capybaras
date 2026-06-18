@@ -138,8 +138,9 @@ export function EmailForm({ initial }: EmailFormProps) {
                     >
                       resend.com
                     </a>{" "}
-                    in a new tab and sign up. Use the email address you&apos;ll be testing with —
-                    you&apos;ll see why in the heads-up note below.
+                    in a new tab and sign up — you can use <strong>Sign in with GitHub</strong>{" "}
+                    here, same as your other tools. Use the email address you&apos;ll be testing
+                    with — you&apos;ll see why in the heads-up note below.
                   </li>
                 </ol>
                 <div className="rounded-md border border-amber-500/40 bg-amber-50 p-3 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">

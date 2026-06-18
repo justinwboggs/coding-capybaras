@@ -75,7 +75,8 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
       <CardHeader>
         <CardTitle>Deploy</CardTitle>
         <CardDescription>
-          Push to Vercel and paste the URL below. Step-by-step:{" "}
+          Push to Vercel and paste the URL below. Signing into Vercel with <strong>GitHub</strong>{" "}
+          makes importing your repo seamless — no extra connection step. Step-by-step:{" "}
           <a
             href="https://vercel.com/new"
             target="_blank"
@@ -84,10 +85,9 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
           >
             vercel.com/new
           </a>{" "}
-          → import your repo → paste all your <code>.env.local</code> vars into
-          Vercel&apos;s env editor → Deploy. First build runs the migrations
-          via the build command if you wired it up; otherwise run{" "}
-          <code>pnpm db:migrate</code> locally pointing at the production
+          → import your repo → paste all your <code>.env.local</code> vars into Vercel&apos;s env
+          editor → Deploy. First build runs the migrations via the build command if you wired it up;
+          otherwise run <code>pnpm db:migrate</code> locally pointing at the production
           DATABASE_URL.
         </CardDescription>
         <a
@@ -101,11 +101,7 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onContinue)}
-            className="space-y-5"
-            noValidate
-          >
+          <form onSubmit={form.handleSubmit(onContinue)} className="space-y-5" noValidate>
             <FormField
               control={form.control}
               name="deploymentUrl"
@@ -123,8 +119,7 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
                     />
                   </FormControl>
                   <p className="text-xs text-muted-foreground">
-                    Paste the URL Vercel gives you after the first successful
-                    deploy.
+                    Paste the URL Vercel gives you after the first successful deploy.
                   </p>
                   <FormMessage />
                 </FormItem>
@@ -136,7 +131,7 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
               name="stripeLiveMode"
               render={({ field }) => (
                 <FormItem>
-                  <Label className="flex items-start gap-3 rounded-md border border-amber-500/40 bg-amber-50 p-3 dark:bg-amber-950/40 has-[input:checked]:border-amber-600">
+                  <Label className="flex items-start gap-3 rounded-md border border-amber-500/40 bg-amber-50 p-3 has-[input:checked]:border-amber-600 dark:bg-amber-950/40">
                     <input
                       type="checkbox"
                       checked={Boolean(field.value)}
@@ -149,13 +144,12 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
                       </span>
                       <br />
                       <span className="text-amber-900/80 dark:text-amber-200/80">
-                        Don&apos;t toggle this until you&apos;ve smoke-tested a
-                        full checkout + webhook in test mode on the deployed
-                        URL. Replace <code>sk_test_</code>/<code>pk_test_</code>{" "}
-                        with live keys in Vercel envs, and add a new live-mode
+                        Don&apos;t toggle this until you&apos;ve smoke-tested a full checkout +
+                        webhook in test mode on the deployed URL. Replace <code>sk_test_</code>/
+                        <code>pk_test_</code> with live keys in Vercel envs, and add a new live-mode
                         webhook endpoint pointing at{" "}
-                        <code>https://yourapp.com/api/webhooks/stripe</code>{" "}
-                        (new <code>whsec_</code> secret).
+                        <code>https://yourapp.com/api/webhooks/stripe</code> (new{" "}
+                        <code>whsec_</code> secret).
                       </span>
                     </span>
                   </Label>
@@ -176,13 +170,11 @@ export function DeployForm({ initial }: { initial: DeployStageInput }) {
                       className="mt-0.5 h-4 w-4 accent-primary"
                     />
                     <span className="text-sm">
-                      <span className="font-medium">
-                        I&apos;ve made my launch announcement
-                      </span>
+                      <span className="font-medium">I&apos;ve made my launch announcement</span>
                       <br />
                       <span className="text-muted-foreground">
-                        Twitter / LinkedIn / Product Hunt / your audience —
-                        wherever your people are.
+                        Twitter / LinkedIn / Product Hunt / your audience — wherever your people
+                        are.
                       </span>
                     </span>
                   </Label>

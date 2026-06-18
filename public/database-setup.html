@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Set up your database · Coding Capybaras</title>
+    <!--
+      Static database-setup page served by requireAuth() (platform/lib/auth)
+      when the Supabase project is connected but its tables haven't been
+      migrated yet (Postgres undefined_table / 42P01 on the first query). It is
+      intentionally a plain HTML file in /public — it does NOT go through the
+      Next.js root layout and does NOT import or call any Supabase/DB client,
+      so it renders even against an un-migrated database. All styling is
+      inlined; no external assets are requested.
+    -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f8f8f7;
+        --card: #ffffff;
+        --fg: #18181b;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --accent: #b45309;
+        --accent-soft: #fef3c7;
+        --code-bg: #f4f4f5;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0c0c0d;
+          --card: #161618;
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --accent: #fbbf24;
+          --accent-soft: #2a2310;
+          --code-bg: #1f1f22;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 48px 20px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        max-width: 640px;
+        width: 100%;
+        padding: 40px;
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.04),
+          0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+      .badge {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 4px 12px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 28px;
+        line-height: 1.25;
+        margin: 0 0 12px;
+        letter-spacing: -0.01em;
+      }
+      p {
+        margin: 0 0 16px;
+        color: var(--fg);
+      }
+      p.lead {
+        color: var(--muted);
+        font-size: 16px;
+      }
+      ol {
+        margin: 24px 0 8px;
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+      }
+      ol > li {
+        position: relative;
+        padding: 0 0 20px 44px;
+        counter-increment: step;
+      }
+      ol > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      li strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+      li span {
+        color: var(--muted);
+        font-size: 15px;
+      }
+      code,
+      pre {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 13.5px;
+      }
+      code {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+        white-space: nowrap;
+      }
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        margin: 10px 0 0;
+        line-height: 1.7;
+      }
+      pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        white-space: pre;
+      }
+      .cmd {
+        margin-top: 10px;
+      }
+      .cmd .note {
+        color: var(--muted);
+      }
+      a {
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .footnote {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        font-size: 14px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <span class="badge">Database setup</span>
+      <h1>Set up your database</h1>
+      <p class="lead">
+        You&rsquo;re connected to Supabase and signed in &mdash; but your database doesn&rsquo;t
+        have any tables yet, so the app can&rsquo;t load your account. Two commands create them.
+        This takes about a minute.
+      </p>
+
+      <ol>
+        <li>
+          <strong>Create the tables and seed data</strong>
+          <span>
+            In your project folder (the one with <code>package.json</code>), open a terminal and run
+            these two commands. Both read <code>DATABASE_URL</code> from your
+            <code>.env.local</code>, and both are safe to re-run:
+          </span>
+          <div class="cmd">
+            <pre><code>pnpm db:push          <span class="note"># create tables from the schema (choose "Yes" when prompted)</span>
+pnpm db:apply:manual  <span class="note"># RLS policies, plan seed data, first-user-admin trigger</span></code></pre>
+          </div>
+        </li>
+        <li>
+          <strong>Reload this page</strong>
+          <span>
+            Once both commands finish, refresh your browser. Your dashboard will load normally
+            &mdash; no need to restart the dev server.
+          </span>
+        </li>
+      </ol>
+
+      <div class="footnote">
+        Stuck? <code>pnpm db:push</code> builds the tables from the Drizzle schema, and
+        <code>pnpm db:apply:manual</code> applies the hand-written SQL (row-level security, plan
+        seed data, and the trigger that makes your first signup an admin). Full details are in the
+        README Quickstart.
+      </div>
+    </main>
+  </body>
+</html>

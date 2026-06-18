@@ -35,6 +35,18 @@ here.)
    | `SUPABASE_SERVICE_ROLE_KEY`     | Same **"Legacy anon, service_role API keys"** tab. Copy the `service_role` key. Keep it secret — it bypasses RLS.                                  |
    | `DATABASE_URL`                  | **Connect → "Direct" card → "Transaction pooler" → Type: URI** (port 6543). Replace `[YOUR-PASSWORD]` with your database password.                 |
 
+3. Create your database tables. A brand-new Supabase project is empty —
+   these two commands build the schema and seed it. Both read
+   `DATABASE_URL` from `.env.local` and are safe to re-run:
+
+   ```bash
+   pnpm db:push          # create tables from the schema (choose "Yes" when prompted)
+   pnpm db:apply:manual  # RLS policies, plan seed data, first-user-admin trigger
+   ```
+
+   Skip this and sign-up will still succeed (that's Supabase auth), but the
+   dashboard crashes on its first query because the tables don't exist yet.
+
 Then start the dev server:
 
 ```bash

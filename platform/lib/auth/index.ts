@@ -112,6 +112,28 @@ async function maybeSendWelcome(row: CurrentUser): Promise<void> {
 }
 
 /**
+ * True when `err` (or anything in its `cause` chain) is Postgres
+ * undefined_table (42P01) — i.e. the Supabase project is connected but its
+ * tables haven't been migrated yet. postgres-js wraps the driver error, so we
+ * check the `code`, fall back to a message match, and recurse into `cause`.
+ *
+ * Mirrors the env-guard pattern: instead of crashing into the error boundary
+ * on a fresh, un-migrated DB, requireAuth uses this to redirect to the static
+ * /database-setup.html guide.
+ */
+function isSchemaNotReady(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { code?: unknown; message?: unknown; cause?: unknown };
+  if (e.code === "42P01") return true;
+  if (typeof e.message === "string" && /relation .* does not exist/i.test(e.message)) {
+    return true;
+  }
+  // Walk the cause chain (guard against a self-referential cause).
+  if (e.cause && e.cause !== err) return isSchemaNotReady(e.cause);
+  return false;
+}
+
+/**
  * Like getCurrentUser, but redirects to /sign-in if not authenticated.
  * Use in authed layouts, server actions, and route handlers.
  *
@@ -126,18 +148,27 @@ async function maybeSendWelcome(row: CurrentUser): Promise<void> {
  * bare /sign-in, no preservation.
  */
 export async function requireAuth(opts?: { next?: string }): Promise<CurrentUser> {
-  const user = await getCurrentUser();
+  let user: CurrentUser | null;
+  try {
+    user = await getCurrentUser();
+  } catch (err) {
+    // Connected to Supabase but the tables don't exist yet (fresh project,
+    // migrations not applied) → undefined_table on the first platform_users
+    // query. Send the user to the static DB-setup guide rather than the error
+    // boundary. That page renders without the DB, and the env is configured by
+    // this point so the middleware env-guard passes through — no redirect loop.
+    if (isSchemaNotReady(err)) {
+      redirect("/database-setup.html" as Route);
+    }
+    throw err;
+  }
   if (!user) {
     // Only encode same-origin paths; an absolute/protocol-relative `next`
     // would be filtered out by /auth/callback anyway, but reject here too
     // so we never emit a redirect URL that looks open-redirect-shaped.
     const safe =
-      opts?.next && opts.next.startsWith("/") && !opts.next.startsWith("//")
-        ? opts.next
-        : null;
-    const dest = safe
-      ? `/sign-in?next=${encodeURIComponent(safe)}`
-      : "/sign-in";
+      opts?.next && opts.next.startsWith("/") && !opts.next.startsWith("//") ? opts.next : null;
+    const dest = safe ? `/sign-in?next=${encodeURIComponent(safe)}` : "/sign-in";
     // `dest` is a dynamic same-origin path — typedRoutes can't statically
     // verify the query string, so cast to satisfy the redirect signature.
     redirect(dest as Route);

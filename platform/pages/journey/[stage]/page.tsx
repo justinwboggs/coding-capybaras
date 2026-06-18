@@ -16,7 +16,6 @@ import {
 import { BrandingForm } from "../_components/branding-form";
 import { DeployForm } from "../_components/deploy-form";
 import { EmailForm } from "../_components/email-form";
-import { FoundationForm } from "../_components/foundation-form";
 import { LaunchPrepForm } from "../_components/launch-prep-form";
 import { PaymentsForm } from "../_components/payments-form";
 import { ProjectForm } from "../_components/project-form";
@@ -60,11 +59,6 @@ export default async function JourneyStagePage({ params }: PageProps) {
   switch (stage) {
     case "project":
       return <ProjectForm initial={(data.project ?? {}) as never} />;
-    case "foundation":
-      // Foundation is a confirmation step — Supabase is necessarily already
-      // connected by the time this renders (auth + DB both ran to get here).
-      // Pass the signed-in email as concrete proof; no journey.data needed.
-      return <FoundationForm userEmail={user.email} />;
     case "payments":
       return <PaymentsForm initial={(data.payments ?? {}) as never} />;
     case "email":

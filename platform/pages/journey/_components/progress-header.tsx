@@ -15,7 +15,7 @@ import {
 import { SkipButton } from "./skip-button";
 
 // Top-of-page progress strip. Reads the current pathname to figure out which
-// stage the user is on (so "Stage 3 of 7: Payments" tracks where you are,
+// stage the user is on (so "Stage 2 of 7: Payments" tracks where you are,
 // not where the journey thinks it's at).
 export function ProgressHeader({ journey }: { journey: PlatformJourney }) {
   const pathname = usePathname();
@@ -35,12 +35,10 @@ export function ProgressHeader({ journey }: { journey: PlatformJourney }) {
           {stage && stageNumber !== null ? (
             <>
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Stage {stageNumber} of {STAGES.length} · ~
-                {stage.estimatedMinutes} min · {pct}% complete
+                Stage {stageNumber} of {STAGES.length} · ~{stage.estimatedMinutes} min · {pct}%
+                complete
               </p>
-              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                {stage.title}
-              </h1>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{stage.title}</h1>
               <p className="text-muted-foreground">{stage.description}</p>
             </>
           ) : (
@@ -48,19 +46,14 @@ export function ProgressHeader({ journey }: { journey: PlatformJourney }) {
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Journey · {pct}% complete
               </p>
-              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Let&apos;s ship it.
-              </h1>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Let&apos;s ship it.</h1>
             </>
           )}
         </div>
         <SkipButton />
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full bg-primary transition-all"
-          style={{ width: `${pct}%` }}
-        />
+        <div className="h-full bg-primary transition-all" style={{ width: `${pct}%` }} />
       </div>
     </header>
   );

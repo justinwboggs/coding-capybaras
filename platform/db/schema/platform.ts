@@ -34,9 +34,7 @@ export const platformUsers = pgTable("platform_users", {
   // platform_plans (text PK with FK), so we declare the column shape here
   // and rely on the migration for the constraint.
   manualPlanOverride: text("manual_plan_override"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   metadata: jsonb("metadata").notNull().default({}),
 });
 
@@ -53,15 +51,10 @@ export const platformPaymentCustomers = pgTable(
       .references(() => platformUsers.id, { onDelete: "cascade" }),
     externalId: text("external_id").notNull(),
     provider: text("provider").notNull(), // 'stripe' | 'bcpartners'
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
-    uniqueIndex("platform_payment_customers_provider_external_id_uq").on(
-      t.provider,
-      t.externalId,
-    ),
+    uniqueIndex("platform_payment_customers_provider_external_id_uq").on(t.provider, t.externalId),
   ],
 );
 
@@ -107,10 +100,7 @@ export const platformSubscriptions = pgTable(
     metadata: jsonb("metadata").notNull().default({}),
   },
   (t) => [
-    uniqueIndex("platform_subscriptions_provider_external_id_uq").on(
-      t.provider,
-      t.externalId,
-    ),
+    uniqueIndex("platform_subscriptions_provider_external_id_uq").on(t.provider, t.externalId),
   ],
 );
 
@@ -124,9 +114,7 @@ export const platformUsageEvents = pgTable("platform_usage_events", {
     .references(() => platformUsers.id, { onDelete: "cascade" }),
   eventName: text("event_name").notNull(),
   metadata: jsonb("metadata").notNull().default({}),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ──────────────────────────────────────────────────────────────────
@@ -140,9 +128,7 @@ export const platformEmailLog = pgTable("platform_email_log", {
   toAddress: text("to_address").notNull(),
   templateKey: text("template_key").notNull(),
   status: text("status").notNull(), // 'sent' | 'failed' | 'queued'
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ──────────────────────────────────────────────────────────────────
@@ -157,9 +143,7 @@ export const platformAuditLog = pgTable("platform_audit_log", {
   resourceType: text("resource_type").notNull(),
   resourceId: text("resource_id"),
   metadata: jsonb("metadata").notNull().default({}),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ──────────────────────────────────────────────────────────────────
@@ -168,15 +152,13 @@ export const platformAuditLog = pgTable("platform_audit_log", {
 export const platformConfig = pgTable("platform_config", {
   key: text("key").primaryKey(),
   value: jsonb("value").notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ──────────────────────────────────────────────────────────────────
 // platform_journey — per-user state for the guided onboarding flow.
 // One row per user (PK = user_id). `data` is nested per-stage JSONB
-// (e.g. data.foundation.supabaseUrl). `current_stage` advances on
+// (e.g. data.payments.attestations). `current_stage` advances on
 // stage completion; `completed_at` set when all stages are done OR
 // when the user explicitly skips the journey.
 // ──────────────────────────────────────────────────────────────────
@@ -186,9 +168,7 @@ export const platformJourney = pgTable("platform_journey", {
     .references(() => platformUsers.id, { onDelete: "cascade" }),
   currentStage: text("current_stage").notNull().default("project"),
   data: jsonb("data").notNull().default({}),
-  startedAt: timestamp("started_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
   completedAt: timestamp("completed_at", { withTimezone: true }),
 });
 
@@ -204,42 +184,32 @@ export const platformSupportRequests = pgTable("platform_support_requests", {
   subject: text("subject").notNull(),
   description: text("description").notNull(),
   status: text("status").notNull().default("open"), // 'open' | 'in_progress' | 'closed'
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ──────────────────────────────────────────────────────────────────
 // platform_business_inquiries — Business-tier contact form leads.
 // RLS: anon can INSERT (public form); only admins can SELECT.
 // ──────────────────────────────────────────────────────────────────
-export const platformBusinessInquiries = pgTable(
-  "platform_business_inquiries",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    company: text("company"),
-    whatBuilding: text("what_building").notNull(),
-    teamSize: text("team_size").notNull(), // '1-5' | '6-20' | '21-100' | '100+'
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-  },
-);
+export const platformBusinessInquiries = pgTable("platform_business_inquiries", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  company: text("company"),
+  whatBuilding: text("what_building").notNull(),
+  teamSize: text("team_size").notNull(), // '1-5' | '6-20' | '21-100' | '100+'
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 // Inferred row types — use these in DTOs and server actions.
 export type PlatformUser = typeof platformUsers.$inferSelect;
-export type PlatformPaymentCustomer =
-  typeof platformPaymentCustomers.$inferSelect;
+export type PlatformPaymentCustomer = typeof platformPaymentCustomers.$inferSelect;
 export type PlatformPlan = typeof platformPlans.$inferSelect;
 export type PlatformSubscription = typeof platformSubscriptions.$inferSelect;
 export type PlatformUsageEvent = typeof platformUsageEvents.$inferSelect;
 export type PlatformEmailLogEntry = typeof platformEmailLog.$inferSelect;
 export type PlatformAuditLogEntry = typeof platformAuditLog.$inferSelect;
 export type PlatformConfigEntry = typeof platformConfig.$inferSelect;
-export type PlatformSupportRequest =
-  typeof platformSupportRequests.$inferSelect;
-export type PlatformBusinessInquiry =
-  typeof platformBusinessInquiries.$inferSelect;
+export type PlatformSupportRequest = typeof platformSupportRequests.$inferSelect;
+export type PlatformBusinessInquiry = typeof platformBusinessInquiries.$inferSelect;
 export type PlatformJourney = typeof platformJourney.$inferSelect;

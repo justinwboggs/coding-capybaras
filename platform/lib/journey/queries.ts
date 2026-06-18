@@ -14,39 +14,50 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/platform/db/client";
 import { platformJourney, type PlatformJourney } from "@/platform/db/schema/platform";
-import {
-  getOnboardingInitialRedirect,
-  getOnboardingMode,
-} from "@/platform/lib/config";
+import { getOnboardingInitialRedirect, getOnboardingMode } from "@/platform/lib/config";
 
-import {
-  firstIncompleteStage,
-  type JourneyData,
-  type StageKey,
-} from "./stages";
+import { firstIncompleteStage, STAGE_KEYS, type JourneyData, type StageKey } from "./stages";
 
 /** The user's journey row, or null if they've never started. Cached per request. */
-export const getJourney = cache(
-  async (userId: string): Promise<PlatformJourney | null> => {
-    const [row] = await db
-      .select()
-      .from(platformJourney)
-      .where(eq(platformJourney.userId, userId))
-      .limit(1);
-    return row ?? null;
-  },
-);
+export const getJourney = cache(async (userId: string): Promise<PlatformJourney | null> => {
+  const [row] = await db
+    .select()
+    .from(platformJourney)
+    .where(eq(platformJourney.userId, userId))
+    .limit(1);
+  return row ?? null;
+});
+
+/**
+ * Repair a row whose `current_stage` is no longer a valid stage key. This
+ * happens to existing users when a stage is removed from the journey (e.g. the
+ * "foundation" stage): their persisted `current_stage = "foundation"` would
+ * throw in getStageIndex(). Coerce it to their first incomplete stage (always a
+ * valid key), persist the fix, and return the corrected row. No-op for the
+ * common case where the stage is already valid. No schema change needed —
+ * `current_stage` is a plain text column.
+ */
+async function coerceCurrentStage(row: PlatformJourney): Promise<PlatformJourney> {
+  if ((STAGE_KEYS as readonly string[]).includes(row.currentStage)) {
+    return row;
+  }
+  const data = (row.data ?? {}) as JourneyData;
+  const corrected: StageKey = firstIncompleteStage(data);
+  await db
+    .update(platformJourney)
+    .set({ currentStage: corrected })
+    .where(eq(platformJourney.userId, row.userId));
+  return { ...row, currentStage: corrected };
+}
 
 /**
  * Returns the user's journey row, creating one with defaults if it doesn't
  * exist yet. Insert is idempotent under ON CONFLICT DO NOTHING so concurrent
  * first-access from two layout renders can't race.
  */
-export async function getOrCreateJourney(
-  userId: string,
-): Promise<PlatformJourney> {
+export async function getOrCreateJourney(userId: string): Promise<PlatformJourney> {
   const existing = await getJourney(userId);
-  if (existing) return existing;
+  if (existing) return coerceCurrentStage(existing);
 
   await db
     .insert(platformJourney)
@@ -62,7 +73,7 @@ export async function getOrCreateJourney(
     // Extremely unlikely — the insert was idempotent and we just queried it.
     throw new Error(`Failed to create journey row for user ${userId}`);
   }
-  return created;
+  return coerceCurrentStage(created);
 }
 
 /**

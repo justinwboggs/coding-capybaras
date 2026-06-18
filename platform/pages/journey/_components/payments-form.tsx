@@ -23,7 +23,7 @@ import {
 import { saveStageAction } from "../actions";
 
 import { CopyableCodeBlock } from "./copyable-code-block";
-import { SecurityCallout } from "./security-bits";
+import { SecurityCallout, SecurityIntro } from "./security-bits";
 import { StageFormFooter } from "./stage-form-footer";
 
 interface PaymentsFormProps {
@@ -32,7 +32,7 @@ interface PaymentsFormProps {
   };
 }
 
-// Stage 3 — Payments (Stripe). Instructions + 2 attestations. No Stripe
+// Stage 2 — Payments (Stripe). Instructions + 2 attestations. No Stripe
 // secrets pass through our server; they live in the user's local .env.local.
 export function PaymentsForm({ initial }: PaymentsFormProps) {
   const [saving, startSaving] = useTransition();
@@ -77,14 +77,15 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
 
   return (
     <div className="space-y-4">
+      <SecurityIntro />
+
       <Card>
         <CardHeader>
           <CardTitle>Connect Stripe</CardTitle>
           <CardDescription>
-            Stripe is how your app accepts payments. You&apos;ll set up{" "}
-            <strong>test mode</strong> first — Stripe gives you fake card
-            numbers to play with, no real money moves. You&apos;ll switch to
-            live mode in the Deploy stage, once everything works end-to-end.
+            Stripe is how your app accepts payments. You&apos;ll set up <strong>test mode</strong>{" "}
+            first — Stripe gives you fake card numbers to play with, no real money moves.
+            You&apos;ll switch to live mode in the Deploy stage, once everything works end-to-end.
           </CardDescription>
           <a
             href="https://docs.stripe.com/api-keys"
@@ -99,20 +100,14 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
           <SecurityCallout />
 
           <p className="text-sm text-muted-foreground">
-            Same routine as Stage 2: your Stripe keys go into your local{" "}
+            Same routine as your Supabase keys during install: your Stripe keys go into your local{" "}
             <code>.env.local</code>, never into this site.
           </p>
 
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onContinue)}
-              className="space-y-6"
-              noValidate
-            >
+            <form onSubmit={form.handleSubmit(onContinue)} className="space-y-6" noValidate>
               <section className="space-y-2">
-                <h3 className="font-semibold">
-                  1. Create your Stripe account
-                </h3>
+                <h3 className="font-semibold">1. Create your Stripe account</h3>
                 <ol className="ml-5 list-decimal space-y-1 text-sm text-muted-foreground">
                   <li>
                     Open{" "}
@@ -124,38 +119,35 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
                     >
                       dashboard.stripe.com
                     </a>{" "}
-                    in a new tab. Sign up if you don&apos;t have an account
-                    yet, or sign in if you do.
+                    in a new tab. Sign up if you don&apos;t have an account yet, or sign in if you
+                    do.
                   </li>
                   <li>
-                    Look at the top-right of the Stripe dashboard — there&apos;s
-                    a toggle labeled <strong>Test mode</strong>. Make sure
-                    it&apos;s <strong>on</strong> (you&apos;ll see an orange
-                    glow). The keys you grab in the next step should start
-                    with <code>sk_test_</code> or <code>pk_test_</code> —
-                    that&apos;s how you know you&apos;re in test mode.
+                    Look at the top-right of the Stripe dashboard — there&apos;s a toggle labeled{" "}
+                    <strong>Test mode</strong>. Make sure it&apos;s <strong>on</strong> (you&apos;ll
+                    see an orange glow). The keys you grab in the next step should start with{" "}
+                    <code>sk_test_</code> or <code>pk_test_</code> — that&apos;s how you know
+                    you&apos;re in test mode.
                   </li>
                 </ol>
               </section>
 
               <section className="space-y-2">
                 <h3 className="font-semibold">
-                  2. Add your three Stripe values to your local{" "}
-                  <code>.env.local</code> file
+                  2. Add your three Stripe values to your local <code>.env.local</code> file
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Open <code>.env.local</code> in your editor (same file you
-                  edited in Stage 2). Paste these three lines at the bottom:
+                  Open <code>.env.local</code> in your editor (the same file you put your Supabase
+                  keys in during install). Paste these three lines at the bottom:
                 </p>
                 <CopyableCodeBlock code={ENV_TEMPLATE_STRIPE} />
                 <p className="text-sm text-muted-foreground">
-                  Now go to your Stripe dashboard and replace each placeholder
-                  with its real value:
+                  Now go to your Stripe dashboard and replace each placeholder with its real value:
                 </p>
                 <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
                   <li>
-                    In Stripe, go to <strong>Developers → API keys</strong>{" "}
-                    (left sidebar). You&apos;ll find two values here:
+                    In Stripe, go to <strong>Developers → API keys</strong> (left sidebar).
+                    You&apos;ll find two values here:
                     <ul className="ml-5 mt-1 list-disc space-y-1">
                       <li>
                         <strong>Publishable key</strong> → paste into{" "}
@@ -167,10 +159,9 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
                         </div>
                       </li>
                       <li>
-                        <strong>Secret key</strong> → click{" "}
-                        <strong>Reveal test key</strong> to copy it, then
-                        paste into <code>STRIPE_SECRET_KEY</code> (this
-                        one&apos;s the most sensitive — keep it safe)
+                        <strong>Secret key</strong> → click <strong>Reveal test key</strong> to copy
+                        it, then paste into <code>STRIPE_SECRET_KEY</code> (this one&apos;s the most
+                        sensitive — keep it safe)
                         {/* COPY_TODO: review tone — inline example. */}
                         <div className="mt-0.5 text-xs">
                           <em>yours starts with</em> <code>sk_test_51</code>{" "}
@@ -180,21 +171,16 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
                     </ul>
                   </li>
                   <li>
-                    For <code>STRIPE_WEBHOOK_SECRET</code>: this is the code
-                    Stripe uses to tell your app when a payment goes through.
-                    Two ways to handle it:
+                    For <code>STRIPE_WEBHOOK_SECRET</code>: this is the code Stripe uses to tell
+                    your app when a payment goes through. Two ways to handle it:
                     <ul className="ml-5 mt-1 list-disc space-y-1">
                       <li>
-                        <strong>Easier (recommended for now):</strong> leave
-                        the placeholder as-is. You&apos;ll wire this up
-                        properly in the Deploy stage, once your app is live
+                        <strong>Easier (recommended for now):</strong> leave the placeholder as-is.
+                        You&apos;ll wire this up properly in the Deploy stage, once your app is live
                         on the internet.
                       </li>
                       <li>
-                        <strong>
-                          If you want to test webhooks locally now:
-                        </strong>{" "}
-                        install the{" "}
+                        <strong>If you want to test webhooks locally now:</strong> install the{" "}
                         <a
                           href="https://docs.stripe.com/stripe-cli"
                           target="_blank"
@@ -204,13 +190,9 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
                           Stripe CLI
                         </a>{" "}
                         and run{" "}
-                        <code>
-                          stripe listen --forward-to
-                          localhost:3000/api/webhooks/stripe
-                        </code>{" "}
-                        in your editor&apos;s terminal. The CLI prints a{" "}
-                        <code>whsec_…</code> value — paste that as your
-                        webhook secret.
+                        <code>stripe listen --forward-to localhost:3000/api/webhooks/stripe</code>{" "}
+                        in your editor&apos;s terminal. The CLI prints a <code>whsec_…</code> value
+                        — paste that as your webhook secret.
                         {/* COPY_TODO: review tone — inline example. */}
                         <div className="mt-0.5 text-xs">
                           <em>yours will start with</em> <code>whsec_</code>{" "}
@@ -221,8 +203,7 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
                   </li>
                 </ul>
                 <p className="text-sm text-muted-foreground">
-                  Save the file (<strong>Cmd+S</strong> on Mac,{" "}
-                  <strong>Ctrl+S</strong> on Windows).
+                  Save the file (<strong>Cmd+S</strong> on Mac, <strong>Ctrl+S</strong> on Windows).
                 </p>
               </section>
 
@@ -242,11 +223,7 @@ export function PaymentsForm({ initial }: PaymentsFormProps) {
   );
 }
 
-function Attestations({
-  form,
-}: {
-  form: ReturnType<typeof useForm<PaymentsStageInput>>;
-}) {
+function Attestations({ form }: { form: ReturnType<typeof useForm<PaymentsStageInput>> }) {
   return (
     <section className="space-y-3 rounded-md border bg-muted/40 p-4">
       <Label className="text-sm font-semibold">Confirm before continuing</Label>
@@ -255,10 +232,7 @@ function Attestations({
           control={form.control}
           name="createdAccount"
           render={({ field }) => (
-            <AttestationBox
-              checked={Boolean(field.value)}
-              onChange={field.onChange}
-            >
+            <AttestationBox checked={Boolean(field.value)} onChange={field.onChange}>
               I&apos;ve signed into my Stripe account
             </AttestationBox>
           )}
@@ -267,12 +241,8 @@ function Attestations({
           control={form.control}
           name="addedEnvVars"
           render={({ field }) => (
-            <AttestationBox
-              checked={Boolean(field.value)}
-              onChange={field.onChange}
-            >
-              I&apos;ve added my three Stripe values to my local{" "}
-              <code>.env.local</code> file
+            <AttestationBox checked={Boolean(field.value)} onChange={field.onChange}>
+              I&apos;ve added my three Stripe values to my local <code>.env.local</code> file
             </AttestationBox>
           )}
         />

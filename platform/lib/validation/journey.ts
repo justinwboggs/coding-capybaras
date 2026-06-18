@@ -13,13 +13,7 @@ import { z } from "zod";
 // Same schema runs client (RHF resolver) and server (action validation).
 // ─────────────────────────────────────────────────────────────────
 
-const optionalText = (max: number) =>
-  z
-    .string()
-    .trim()
-    .max(max)
-    .optional()
-    .or(z.literal(""));
+const optionalText = (max: number) => z.string().trim().max(max).optional().or(z.literal(""));
 
 // ── project ──────────────────────────────────────────────────────
 export const projectStageSchema = z.object({
@@ -33,45 +27,21 @@ export const projectStageSchema = z.object({
 });
 export const projectStageRequiredSchema = projectStageSchema.extend({
   name: z.string().trim().min(1, "Project name is required").max(80),
-  what: z
-    .string()
-    .trim()
-    .min(10, "Tell us a sentence or two about what you're building")
-    .max(2000),
+  what: z.string().trim().min(10, "Tell us a sentence or two about what you're building").max(2000),
 });
 export type ProjectStageInput = z.infer<typeof projectStageSchema>;
 
-// ── foundation / payments / email ────────────────────────────────
-// These three stages handle third-party SECRETS (Supabase keys, Stripe keys,
-// Resend API key). By design the platform never collects these — the journey
-// instead displays instructions + a static env template, and the user
-// self-attests that they've added the values to their own local .env.local.
-// See lib/journey/env-templates.ts and the security callouts in the forms.
+// ── payments / email ─────────────────────────────────────────────
+// These two stages handle third-party SECRETS (Stripe keys, Resend API key).
+// By design the platform never collects these — the journey instead displays
+// instructions + a static env template, and the user self-attests that they've
+// added the values to their own local .env.local. See
+// lib/journey/env-templates.ts and the security callouts in the forms.
 //
 // Schemas are attestation booleans only. The strict variants require all
 // checkboxes to be true to advance to the next stage.
 
-const attestationRequired = (message: string) =>
-  z.literal(true, { errorMap: () => ({ message }) });
-
-// foundation: three confirmations.
-export const foundationStageSchema = z.object({
-  createdProject: z.boolean().optional(),
-  addedEnvVars: z.boolean().optional(),
-  verifiedGitignore: z.boolean().optional(),
-});
-export const foundationStageRequiredSchema = z.object({
-  createdProject: attestationRequired(
-    "Confirm you've created your Supabase project",
-  ),
-  addedEnvVars: attestationRequired(
-    "Confirm you've added the Supabase env vars locally",
-  ),
-  verifiedGitignore: attestationRequired(
-    "Confirm your .env.local is gitignored",
-  ),
-});
-export type FoundationStageInput = z.infer<typeof foundationStageSchema>;
+const attestationRequired = (message: string) => z.literal(true, { errorMap: () => ({ message }) });
 
 // payments: two confirmations.
 export const paymentsStageSchema = z.object({
@@ -79,12 +49,8 @@ export const paymentsStageSchema = z.object({
   addedEnvVars: z.boolean().optional(),
 });
 export const paymentsStageRequiredSchema = z.object({
-  createdAccount: attestationRequired(
-    "Confirm you've created or signed into your Stripe account",
-  ),
-  addedEnvVars: attestationRequired(
-    "Confirm you've added the Stripe env vars locally",
-  ),
+  createdAccount: attestationRequired("Confirm you've created or signed into your Stripe account"),
+  addedEnvVars: attestationRequired("Confirm you've added the Stripe env vars locally"),
 });
 export type PaymentsStageInput = z.infer<typeof paymentsStageSchema>;
 
@@ -94,12 +60,8 @@ export const emailStageSchema = z.object({
   addedEnvVars: z.boolean().optional(),
 });
 export const emailStageRequiredSchema = z.object({
-  createdAccount: attestationRequired(
-    "Confirm you've created your Resend account",
-  ),
-  addedEnvVars: attestationRequired(
-    "Confirm you've added the Resend env vars locally",
-  ),
+  createdAccount: attestationRequired("Confirm you've created your Resend account"),
+  addedEnvVars: attestationRequired("Confirm you've added the Resend env vars locally"),
 });
 export type EmailStageInput = z.infer<typeof emailStageSchema>;
 
@@ -113,12 +75,7 @@ export const brandingStageSchema = z.object({
     .regex(/^#[0-9a-fA-F]{6}$/, "Must be a 6-digit hex color, e.g. #1e3a6d")
     .optional()
     .or(z.literal("")),
-  logoUrl: z
-    .string()
-    .trim()
-    .max(2000)
-    .optional()
-    .or(z.literal("")),
+  logoUrl: z.string().trim().max(2000).optional().or(z.literal("")),
   tagline: optionalText(200),
 });
 export const brandingStageRequiredSchema = brandingStageSchema.extend({
@@ -127,11 +84,7 @@ export const brandingStageRequiredSchema = brandingStageSchema.extend({
 export type BrandingStageInput = z.infer<typeof brandingStageSchema>;
 
 // ── launch-prep ──────────────────────────────────────────────────
-const refundPolicySchema = z.enum([
-  "30-day-no-questions",
-  "case-by-case",
-  "no-refunds",
-]);
+const refundPolicySchema = z.enum(["30-day-no-questions", "case-by-case", "no-refunds"]);
 export const launchPrepStageSchema = z.object({
   termsAccepted: z.boolean().optional(),
   privacyAccepted: z.boolean().optional(),
@@ -160,11 +113,7 @@ export const deployStageSchema = z.object({
   announcementMade: z.boolean().optional(),
 });
 export const deployStageRequiredSchema = deployStageSchema.extend({
-  deploymentUrl: z
-    .string()
-    .trim()
-    .min(1, "Paste your live URL once you've deployed")
-    .max(500),
+  deploymentUrl: z.string().trim().min(1, "Paste your live URL once you've deployed").max(500),
 });
 export type DeployStageInput = z.infer<typeof deployStageSchema>;
 

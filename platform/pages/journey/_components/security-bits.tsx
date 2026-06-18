@@ -4,10 +4,11 @@
 import { ShieldCheck } from "lucide-react";
 
 /**
- * One-time "why we don't ask for your secrets" explainer, shown on Stage 2
- * (Foundation). Supabase is already connected by the time the user gets here,
- * so this sets the trust posture for the *upcoming* secret-key stages (Stripe
- * and Resend), which follow the same paste-into-your-own-.env.local pattern.
+ * One-time "why we don't ask for your secrets" explainer, shown on the Payments
+ * stage — the journey's first secret-collecting stage now that Supabase is set
+ * up before the journey begins. Sets the trust posture for the secret-key
+ * stages (Stripe and Resend), which follow the same
+ * paste-into-your-own-.env.local pattern.
  */
 export function SecurityIntro() {
   return (
@@ -19,22 +20,15 @@ export function SecurityIntro() {
             We&apos;ll never ask you to paste secret keys into this site.
           </h2>
           <p className="text-muted-foreground">
-            The upcoming stages involve <em>secret keys</em> from Stripe and Resend — just like the
-            Supabase keys you&apos;ve already set up. Think of them like the passwords to your bank
-            account — they&apos;re powerful, and worth protecting. Most onboarding tools collect
-            these through web forms. We don&apos;t. Your keys stay on your own computer, in a file
-            called <code>.env.local</code>, and never touch our servers.
+            The next stages involve <em>secret keys</em> from Stripe and Resend. Think of them like
+            the passwords to your bank account — they&apos;re powerful, and worth protecting. Most
+            onboarding tools collect these through web forms. We don&apos;t. Your keys stay on your
+            own computer, in a file called <code>.env.local</code>, and never touch our servers.
           </p>
           <p className="text-muted-foreground">
             Every step shows you exactly what to do and where to paste each value (on your computer,
             not here). Then you confirm you did it. That&apos;s the whole pattern — no secrets ever
             flow through us.
-          </p>
-          <p className="text-muted-foreground">
-            <strong>Heads-up:</strong> those keys belong in the same local <code>.env.local</code>{" "}
-            file your Supabase values are already in — and the boilerplate keeps that file out of
-            Git (via <code>.gitignore</code>), so your secrets never get uploaded to the internet by
-            accident.
           </p>
         </div>
       </div>

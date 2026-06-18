@@ -5,16 +5,10 @@ import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
 
 // A monospace code block with a "Copy" button in the top-right. Used in the
-// instructional stages (foundation / payments / email) to hand users the env
-// template they paste into their own .env.local — secrets stay on their
-// machine, never round-trip through our server.
-export function CopyableCodeBlock({
-  code,
-  label = "Copy",
-}: {
-  code: string;
-  label?: string;
-}) {
+// instructional stages (payments / email) to hand users the env template they
+// paste into their own .env.local — secrets stay on their machine, never
+// round-trip through our server.
+export function CopyableCodeBlock({ code, label = "Copy" }: { code: string; label?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function onCopy() {

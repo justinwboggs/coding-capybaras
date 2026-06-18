@@ -8,12 +8,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/platform/db/client";
 import { platformAuditLog, platformJourney } from "@/platform/db/schema/platform";
 import { requireAuth } from "@/platform/lib/auth";
-import {
-  CONFIG_KEYS,
-  getAllConfig,
-  getBranding,
-  setConfigValues,
-} from "@/platform/lib/config";
+import { CONFIG_KEYS, getAllConfig, getBranding, setConfigValues } from "@/platform/lib/config";
 import { generateEnvFileTemplate } from "@/platform/lib/journey/env-templates";
 import { getOrCreateJourney } from "@/platform/lib/journey/queries";
 import {
@@ -30,8 +25,6 @@ import {
   deployStageSchema,
   emailStageRequiredSchema,
   emailStageSchema,
-  foundationStageRequiredSchema,
-  foundationStageSchema,
   launchPrepStageRequiredSchema,
   launchPrepStageSchema,
   paymentsStageRequiredSchema,
@@ -48,20 +41,12 @@ type EnvFileResult = { ok: true; content: string } | { error: string };
 // Attestation-only stages: forms collect booleans (not secret values). The
 // action stores them under data[stage].attestations and sets confirmed=true
 // + confirmed_at on the continue intent.
-const ATTESTATION_STAGES = new Set<StageKey>([
-  "foundation",
-  "payments",
-  "email",
-]);
+const ATTESTATION_STAGES = new Set<StageKey>(["payments", "email"]);
 
 // Lax schema (save intent — partial saves allowed) vs strict (continue intent —
 // required fields enforced). See lib/validation/journey.ts for the pair.
 const STAGE_SCHEMAS = {
   project: { lax: projectStageSchema, strict: projectStageRequiredSchema },
-  foundation: {
-    lax: foundationStageSchema,
-    strict: foundationStageRequiredSchema,
-  },
   payments: { lax: paymentsStageSchema, strict: paymentsStageRequiredSchema },
   email: { lax: emailStageSchema, strict: emailStageRequiredSchema },
   branding: { lax: brandingStageSchema, strict: brandingStageRequiredSchema },
@@ -108,8 +93,7 @@ export async function saveStageAction(input: {
   }
   const stage: StageKey = input.stage;
   const schemaPair = STAGE_SCHEMAS[stage];
-  const schema =
-    input.intent === "continue" ? schemaPair.strict : schemaPair.lax;
+  const schema = input.intent === "continue" ? schemaPair.strict : schemaPair.lax;
 
   const parsed = schema.safeParse(input.data ?? {});
   if (!parsed.success) {
@@ -143,18 +127,10 @@ export async function saveStageAction(input: {
       const resolved = await getBranding();
       const currentTagline = (await getAllConfig())["branding.tagline"];
       const entries: { key: string; value: unknown }[] = [];
-      if (
-        b.appName &&
-        b.appName.length > 0 &&
-        b.appName !== resolved.appName
-      ) {
+      if (b.appName && b.appName.length > 0 && b.appName !== resolved.appName) {
         entries.push({ key: CONFIG_KEYS.brandingAppName, value: b.appName });
       }
-      if (
-        b.primaryColor &&
-        b.primaryColor.length > 0 &&
-        b.primaryColor !== resolved.primaryColor
-      ) {
+      if (b.primaryColor && b.primaryColor.length > 0 && b.primaryColor !== resolved.primaryColor) {
         entries.push({
           key: CONFIG_KEYS.brandingPrimaryColor,
           value: b.primaryColor,
@@ -170,8 +146,7 @@ export async function saveStageAction(input: {
 
       // Completion flag — appName presence is the source of truth.
       data.branding = {
-        completed:
-          typeof b.appName === "string" && b.appName.trim().length > 0,
+        completed: typeof b.appName === "string" && b.appName.trim().length > 0,
       };
     } else if (ATTESTATION_STAGES.has(stage)) {
       // ⚠ SECURITY: persist ONLY attestation booleans + confirmed flags. We
@@ -202,9 +177,7 @@ export async function saveStageAction(input: {
     if (stage === "project") {
       const p = parsedData as { name?: string };
       if (p.name && p.name.length > 0) {
-        await setConfigValues([
-          { key: CONFIG_KEYS.brandingAppName, value: p.name },
-        ]);
+        await setConfigValues([{ key: CONFIG_KEYS.brandingAppName, value: p.name }]);
       }
     }
 

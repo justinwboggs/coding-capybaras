@@ -13,7 +13,6 @@
 
 export type StageKey =
   | "project"
-  | "foundation"
   | "payments"
   | "email"
   | "branding"
@@ -35,12 +34,6 @@ export const STAGES: readonly StageDef[] = [
     title: "Your project",
     description: "Name what you're building and who it's for.",
     estimatedMinutes: 5,
-  },
-  {
-    key: "foundation",
-    title: "Foundation",
-    description: "Confirm your Supabase connection — your database and auth backend.",
-    estimatedMinutes: 2,
   },
   {
     key: "payments",
@@ -127,11 +120,10 @@ export function isStageComplete(stage: StageKey, data: StageData): boolean {
   switch (stage) {
     case "project":
       return nonEmptyString(data.name) && nonEmptyString(data.what, 10);
-    // Foundation / Payments / Email are *attestation-only* stages — by design
-    // we never collect secret values via web forms. `data.confirmed = true` is
-    // set by the action when the user ticks every attestation checkbox and
-    // hits Continue. See SECURITY_REDESIGN.md / Tranche 10.1 in the change log.
-    case "foundation":
+    // Payments / Email are *attestation-only* stages — by design we never
+    // collect secret values via web forms. `data.confirmed = true` is set by
+    // the action when the user ticks every attestation checkbox and hits
+    // Continue. See SECURITY_REDESIGN.md / Tranche 10.1 in the change log.
     case "payments":
     case "email":
       return data.confirmed === true;
@@ -159,7 +151,6 @@ export function isStageComplete(stage: StageKey, data: StageData): boolean {
 
 export interface JourneyData {
   project?: Record<string, unknown>;
-  foundation?: Record<string, unknown>;
   payments?: Record<string, unknown>;
   email?: Record<string, unknown>;
   branding?: Record<string, unknown>;

@@ -1,8 +1,44 @@
+<div align="center">
+
+<a href="https://codingcapybaras.com">
+  <img src="https://codingcapybaras.com/opengraph-image" alt="Coding Capybaras — Ship a real SaaS in a weekend" width="640">
+</a>
+
 # Coding Capybaras
 
-A Next.js 15 + Supabase + Stripe + Resend SaaS boilerplate scaffold. Auth,
-billing, transactional email, configuration GUI, audit logging, and a
-staged setup journey are wired up out of the box. You bring the product.
+### Ship a real SaaS in a weekend.
+
+A free, AI-friendly **Next.js 15 + Supabase + Stripe + Resend** SaaS boilerplate for first-time founders shipping with **Claude Code, Cursor, Copilot, or any LLM**. Auth, billing, transactional email, a config GUI, audit logging, and a guided setup journey — wired up out of the box. You bring the product.
+
+[**🌐 Live site &amp; docs**](https://codingcapybaras.com) · [**📥 Get started**](https://codingcapybaras.com/docs) · [**💳 Pricing**](https://codingcapybaras.com/pricing)
+
+[![Live site](https://img.shields.io/badge/live-codingcapybaras.com-BF451D?style=flat-square)](https://codingcapybaras.com)
+![GitHub stars](https://img.shields.io/github/stars/justinwboggs/coding-capybaras?style=flat-square)
+![Next.js 15](https://img.shields.io/badge/Next.js-15-000?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript)
+![License: source-available](https://img.shields.io/badge/license-source--available-informational?style=flat-square)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjustinwboggs%2Fcoding-capybaras)
+
+</div>
+
+---
+
+## Why Coding Capybaras?
+
+Most SaaS boilerplates assume you're an engineer. This one assumes you're a **founder shipping with an AI coding assistant** — so every region ships with `CLAUDE.md` / `.cursorrules` rule files that keep your AI on the rails, and the fiddly infrastructure is already correct so you don't debug your way to it.
+
+- 🚀 **Ship in a weekend** — auth, billing, email, admin, and a guided `/journey` setup flow, all pre-wired.
+- 🤖 **Built for AI coding** — rule files in every region and a three-region architecture (`/platform`, `/website`, `/product`) that stops AI edits from sprawling across your codebase.
+- 💳 **Payments done right** — the Stripe webhook handler ships with signature verification and idempotency already wired in.
+- 🎛️ **Config GUI, not code** — branding, pricing, and email templates edit live at `/config/*` with no redeploy.
+- 💸 **Free to use** — a free, source-available alternative to paid boilerplates like ShipFast, Makerkit, and Supastarter. Build and sell your own SaaS on it. (See the [license](./LICENSE).)
+
+**Stack:** Next.js 15 (App Router) · TypeScript · Tailwind · shadcn/ui · Drizzle · Supabase · Stripe · Resend · Sentry · PostHog.
+
+> **New here?** The fastest path is the **[live guided setup at codingcapybaras.com](https://codingcapybaras.com)**. Prefer to dive straight into code? The Quickstart below gets you running locally.
+
+---
 
 ## Quickstart
 
